@@ -4,6 +4,7 @@ import random
 import time
 
 from paho.mqtt import client as mqtt_client
+import mqtt
 
 
 broker = 'localhost'
@@ -71,7 +72,7 @@ def readFileAndSendCmd(client):
 def run():
     client = connect_mqtt()
     time.sleep(5)
-    git
+
     client.loop_start()
     readFileAndSendCmd(client)
     #publish(client)

@@ -1,14 +1,14 @@
-<!DOCTYPE html>
+<!DOCTYPE html>”
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <title>title</title>
     <!--<link rel="stylesheet" href="style.css">-->
-    <!--<script src="https://unpkg.com/blockly/blockly.min.js"></script>-->
-    <script src="js/blockly.min.js"></script>
-    <script src="js/blocks/moveToPosition.js"></script>
-    <script src="js/blocks/wait.js"></script>
-    <script src="js/js/translate.js"></script>
+    <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+    <!--<script src="js/blockly.min.js"></script>-->
+    <script src="js/moveToPosition.js"></script>
+    <script src="js/wait.js"></script>
+    <script src="js/translate.js"></script>
     <!--<script src="js/files.js" onload="listFiles()"></script>-->
   </head>
   <body> 
@@ -33,7 +33,7 @@
 
     <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
 
-    <xml id="toolbox" style="display: none">
+    <xml id="toolbox" style="display:none">
         <category name="Move" categorystyle="logic_category">
             <block type="3Voies"></block>
             <block type="actionneur"></block>
@@ -61,9 +61,31 @@
         
     </xml>
 
+    <script>
+    </script>
+    <div class="flex-column">
+        <div id="buttons" class="flex-row">
+            <a href="/button?b=1" target="button_state" class="buttons" onclick="setTimeout('clearIframe(\'iframeButtonState\')',4000);">1</a>
+            <a href="/button?b=2" target="button_state" class="buttons" onclick="setTimeout('clearIframe(\'iframeButtonState\')',4000);">2</a>
+            <a href="/button?b=3" target="button_state" class="buttons" onclick="setTimeout('clearIframe(\'iframeButtonState\')',4000);">3</a>
+            <a href="/button?b=4" target="button_state" class="buttons" onclick="setTimeout('clearIframe(\'iframeButtonState\')',4000);">4</a>
+        </div>
+        <div>
+            <iframe id="iframeButtonState" src="" name="button_state" width="100%" height="40px" frameborder="0"></iframe>
+        </div>
+        <script>
+            //clear iframe
+            function clearIframe(iframe){
+                document.getElementById(iframe).src = ""
+            }
+            
+        </script>
+    </div>
+
+
     <div id="err_div"></div>
     <input type="button" onclick="toJson()" value="Click"/>
-    <a href="/sequence?a=fileeeename&c=ceci_n_est_pas_important">Send data to esp</a>
+    <!--<a href="/sequence?a=fileeeename&c=ceci_n_est_pas_important">Send data to esp</a>-->
     <div id="code_div"></div>
 
     <div id="fileList"></div><br>
@@ -76,10 +98,10 @@
             
                     links = ""
                     for(f of files){
-                        links += `<a href="/start?c=${f}">${f}</a><br>`
+                        links += `<a href="/start?c=${f}" target="iframeSequences" onclick="setTimeout(\"clearIframe('iframeSequences')\",4000)">${f}</a><br>`
                     }
-                    document.getElementById("fileList").innerHTML =links;
-                    console.log(links)
+                    links += '<iframe id="iframeSequences" src="" name="iframeSequences" width="100%" height="40px" frameborder="0"></iframe>'
+                    document.getElementById("fileList").innerHTML = links;
             
                     //document.getElementById('placeholder').innerHTML = xhr.responseText;
                 }
@@ -186,6 +208,34 @@
 
       #err_div{
           color: rgb(127, 25, 25);
+      }
+
+      #buttonDiv{
+        width:30%;
+      }
+
+      .buttons{
+        width: 70px;
+        height: 70px;
+        border-radius: 99rem;
+        text-decoration: none;
+        background-color: rgb(79, 106, 228);
+        display: flex;
+        justify-content: center; /* align horizontal */
+        align-items: center; /* align vertical */
+        margin: 30px;
+        color: black;
+        font-weight: bolder;
+      }
+
+      .flex-column{
+        display: flex;
+        flex-direction: column;
+      }
+
+      .flex-row{
+        display: flex;
+        flex-direction: row;
       }
   </style>
 </html>
