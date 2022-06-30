@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>title</title>
+    <!--<link rel="stylesheet" href="style.css">-->
+    <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+    <script src="blocks/moveToPosition.js"></script>
+    <script src="blocks/wait.js"></script>
+    <script src="js/translate.js"></script>
+    <!--<script src="js/files.js" onload="listFiles()"></script>-->
+  </head>
+  <body> 
+    <script>
+        function toggleTodoVisibility(){
+            if(document.getElementById('todo').style.display == "none"){
+                document.getElementById('todo').style.display = "block"
+            }else {
+                document.getElementById('todo').style.display = "none"
+            }
+        }
+    </script>
+    <button onclick="toggleTodoVisibility()">Todo</button>
+    <div id="todo" style="display: none;">
+        TODO:<br>
+        - Vérifier que tout soit bien parsé par les fonctions dans blockly.html
+        - Acceder à tous les enfants dans les fonctions avec childBlocks_<br>
+        - Sur les synchro, vérifier que chaque actionneur n'y soit qu'une fois
+        - Mauvaise checksum sur $1,0,100,40,50,23*110 (doit être 28)
+    </div>
+   
+
+    <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+
+    <xml id="toolbox" style="display: none">
+        <category name="Move" categorystyle="logic_category">
+            <block type="3Voies"></block>
+            <block type="actionneur"></block>
+        </category>
+        <category name="Wait" categorystyle="text_category">
+            <block type="waitS"></block>
+            <block type="waitM"></block>
+            <block type="waitH"></block>
+            <block type="waitButton"></block>
+        </category>
+        <category name="Main" categorystyle="loop_category">
+            <block type="controls_repeat">
+            <value name="TIMES">
+            <!--<shadow type="math_number">
+                <field name="NUM">5</field>
+            </shadow>-->
+            </value>
+            </block>
+            
+            <block type="atTheSameTime"></block>
+            <block type="loopForever"></block>
+            <block type="sync"></block>
+            <block type="home"></block>
+        </category>
+        
+    </xml>
+
+    <div id="err_div"></div>
+    <input type="button" onclick="toJson()" value="Click"/>
+    <a href="/sequence?a=fileeeename&c=ceci_n_est_pas_important">Send data to esp</a>
+    <div id="code_div"></div>
+
+    <div id="fileList"></div><br>
+    <script> //fill the div with programs available on the microcontroler        
+        function listFiles(){
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    files = xhr.responseText.split(",")
+            
+                    links = ""
+                    for(f of files){
+                        links += `<a href="/start?c=${f}">${f}</a><br>`
+                    }
+                    document.getElementById("fileList").innerHTML =links;
+                    console.log(links)
+            
+                    //document.getElementById('placeholder').innerHTML = xhr.responseText;
+                }
+            }
+            xhr.open('GET', 'listFile');
+            xhr.send();
+        }
+        listFiles()
+    </script>
+
+    <script>
+         
+
+        function parseNext(data){
+            console.log("next",data.next)
+            temporary[data.id] = ""
+            if(data.next != undefined){
+                parseNext(data.next.block)
+            }
+        }
+
+        /*
+        function parseAllChildren(parent, data){
+            if(data.next != undefined){
+                parseNext(data.next.block)
+            }
+            
+        }*/
+
+        let temporary={}
+        function parseChild(blocks){
+            
+            /*
+            parents = Blockly.getMainWorkspace().getBlocksByType("controls_repeat")
+            for(p of parents){
+                child = p.childBlocks_
+                ids = []
+                
+                for(c of child){
+                    ids.push(c.id)
+                    console.log("child id", c.id, c.type)
+                }
+                blockList[p.id]=ids
+                
+            }*/
+            for(b of blocks) {
+                if(b.type == 'controls_repeat' || b.type=="sync"){
+                    temporary = {}
+                    parseNext(b.inputs.DO.block)
+                    blockList[b.id] = {...temporary}
+                    //list = parseAllChildren()
+                    //console.log("alle",list)
+                }
+            }
+
+        }
+
+
+        Blockly.inject('blocklyDiv', {
+        toolbox: document.getElementById('toolbox'),
+        scrollbars: false
+        });
+
+        function toJson(){
+            blockList = {}
+            var xml = Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace());
+            var json = Blockly.serialization.workspaces.save(Blockly.getMainWorkspace())
+            var blocks = Blockly.getMainWorkspace().getTopBlocks();
+
+            if(blocks.length > 1){
+                document.getElementById('err_div').innerHTML = "There can be only one starting block"
+                console.log("too much starting blocks")
+                return
+            }
+
+            //save
+            var state = Blockly.serialization.blocks.save(
+                    blocks[0], {addCoordinates: false, doFullSerialization: true});
+            
+            temporary = {}
+            parseNext(json.blocks.blocks[0]) 
+            blockList = {...temporary}
+            console.log(json.blocks)
+
+            //for(k of Object.keys(blockList)) {
+               
+            parseChild(json.blocks.blocks)
+            //}
+            console.log(blockList)
+            translateBlockyToFile(blockList)
+        }
+
+        let blockList = {}
+        
+    </script>
+  </body>
+  <style>
+      #fileList{
+          background-color: #ccc;
+          padding: 5px;
+          max-width: 33%;
+          margin: 15px;
+      }
+
+      #err_div{
+          color: rgb(127, 25, 25);
+      }
+  </style>
+</html>
