@@ -1,0 +1,2 @@
+WaitForButton=1Litre
+Lineaire-1=$1,0,240,1000,100,23*42

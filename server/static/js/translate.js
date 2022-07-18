@@ -39,13 +39,13 @@ function writeLine(elt, separator){
     //code = looping+","
     //code = "_,".repeat(looping)
     if(elt.type == '3Voies'){
-        line = `${elt.getFieldValue('mqtt')}=$1,${elt.getFieldValue('id')},${elt.getFieldValue('pos')}`
+        line = `$1,${elt.getFieldValue('id')},${elt.getFieldValue('pos')}`
         line += "*"+ calcChecksum(line).toString()
-        //code += "V,"+elt.getFieldValue('id') + ",P,"+elt.getFieldValue('pos') + "</br>"
+        line = `${elt.getFieldValue('mqtt')}=${line}`
     } else if(elt.type == 'actionneur'){
-        line = `${elt.getFieldValue('mqtt')}=$1,${elt.getFieldValue('id')},${elt.getFieldValue('pos')},${elt.getFieldValue('speed')},50,23`
+        line = `$1,${elt.getFieldValue('id')},${elt.getFieldValue('pos')},${elt.getFieldValue('speed')},80,23`
         line += "*"+ calcChecksum(line).toString()
-        //code += "A,"+elt.getFieldValue('id') + ",P,"+elt.getFieldValue('pos') + "</br>"
+        line = `${elt.getFieldValue('mqtt')}=${line}`
     } else if(elt.type == 'atTheSameTime'){
         line = `ATTHESAMETIME l=`
         let children = elt.childBlocks_
@@ -96,20 +96,23 @@ function writeLine(elt, separator){
         }
         
     } else if(elt.type == 'waitS'){
-        line = `P=${elt.getFieldValue('delay')}`
+        line = `Pause=${elt.getFieldValue('delay')}`
         //code += "S,"+elt.getFieldValue('delay') + "</br>"
     } else if(elt.type == 'waitM'){
-        line = `P=${elt.getFieldValue('delay')*60}`
+        line = `Pause=${elt.getFieldValue('delay')*60}`
         //code += "M,"+elt.getFieldValue('delay') + "</br>"
     } else if(elt.type == 'waitH'){
-        line = `P=${elt.getFieldValue('delay')*3600}`
+        line = `Pause=${elt.getFieldValue('delay')*3600}`
         //code += "H,"+elt.getFieldValue('delay') + "</br>"
         
     } else if(elt.type == 'waitButton'){
-        line = `B=${elt.getFieldValue('button')}`
+        line = `WaitForButton=${elt.getFieldValue('button')}`
 
     } else if(elt.type == 'home') {
         line = `HOMEALL`
+    }
+    else if(elt.type == 'homeOne') {
+        line = `${elt.getFieldValue('mqtt')}=$3,1,h*106`
     }
 
     //return code
@@ -123,6 +126,16 @@ function calcChecksum(str){
             chksum = chksum ^ c.charCodeAt(0);
     }
     return chksum
+}
+
+function testPurposes(){
+    res = ""
+    for(i=5; i<250; i+=6){
+        str = `$1,0,${i.toString()},300,100,23`
+        chk = calcChecksum(str).toString()
+        res += `WaitForButton=Savon\nLineaire-1=${str}*${chk}\n`
+        
+    }console.log(res)
 }
 
 function translationErr(text){

@@ -115,13 +115,9 @@ Blockly.defineBlocksWithJsonArray([
         "message0": "Wait for a press on %1",
         "args0": [
           {
-            "type": "field_dropdown",
+            "type": "field_input",
             "name": "button",
-            "options": [
-              ["Button 1", "1"],
-              ["Button 2", "2"],
-              ["Button 3", "3"],
-            ]
+            "text":"Start"
           }
         ],
         "previousStatement": null,

@@ -1,10 +1,11 @@
 #from server.sendFileMqtt import connect_mqtt
+from tkinter import Button
 from paho.mqtt import client as mqtt_client
 import time
 import random
 
 class mqtt:
-    
+    buttons={}
     broker = 'localhost'
     port = 1883
     topic = "/savonnerie/"
@@ -17,6 +18,7 @@ class mqtt:
     def __init__(self):
         self.client = self.connect_mqtt()
         self.client.loop_start()
+        #self.buttons = {"1":0,"2":0,"3":0,"4":0}
 
     def connect_mqtt(self):
         def on_connect(client, userdata, flags, rc):
@@ -32,6 +34,27 @@ class mqtt:
         client.on_connect = on_connect
         client.connect(self.broker, self.port)
         return client
+
+    def setButton(self,name):
+        self.buttons[str(name)] = 1
+
+    def scanButton(self, filename):
+        but = {}
+        with open("templates/s/"+filename, "r+") as file1:
+            # Reading from a file
+            lines = file1.read().split("\n")
+            for line in lines:
+                line = line.split(";")[0] #ignore comments
+                if(line != ""):
+                    if(line.find("\n") == -1):
+                        line += "\n"
+                    line = line.split("=")
+                    target = line[0]
+                    arg = line[1]
+                    if target == "WaitForButton":
+                        but[str(arg).replace("\n","")] = 0
+        self.buttons = but
+        return but
 
 
     def publish(self, client, topic, arg):
@@ -56,9 +79,20 @@ class mqtt:
                     line = line.split("=")
                     target = line[0]
                     arg = line[1]
-                    if target == 'P':
+                    if target == 'Pause':
                         print("paused for ", arg.replace("\n",""), "s")
                         time.sleep(float(arg))
+                    elif target == "WaitForButton":
+                        #reset button state first
+                        arg=str(arg).replace("\n","")
+                        self.buttons[arg]=0
+                        print("wait for button" + arg)
+                        print(self.buttons)
+                        while not self.buttons[arg]:
+                            time.sleep(0.1)
+                            
+                        print("button " + arg + " clicked")
+                        self.buttons[arg]=0
                     else:
                         result = self.publish(self.client, self.topic+target, arg)
                         """status = result[0]

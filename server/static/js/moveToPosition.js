@@ -1,3 +1,6 @@
+
+/******************** Homing ************************/
+
 Blockly.defineBlocksWithJsonArray([
   {
     "type": "home",
@@ -14,16 +17,38 @@ Blockly.defineBlocksWithJsonArray([
   }
 ]);
 
+Blockly.defineBlocksWithJsonArray([
+  {
+    "type": "homeOne",
+    "message0": "Home %1",
+    "args0": [
+      {
+        "type": "field_input",
+        "name": "mqtt",
+        "text": "Lineaire-1",
+        "check": "String"
+
+      }
+    ],
+    
+    "nextStatement": null,
+    
+ 
+    "colour": 270,
+    "tooltip": "First block. Do a homing on specified module"
+  }
+]);
+
 /******************** 3 VOIES ************************/
 Blockly.defineBlocksWithJsonArray([
     {
       "type": "3Voies",
-      "message0": "Set 3V %1 on concentrator %3 to position %2",
+      "message0": "Set 3V %1 on %3 to pos %2",
       "args0": [
         {
           "type": "field_number",
           "name": "id",
-          "value": 1,
+          "value": 0,
           "precision": 1
 
         },
@@ -40,7 +65,7 @@ Blockly.defineBlocksWithJsonArray([
           {
             "type": "field_input",
             "name": "mqtt",
-            "text": "Concentrator-1",
+            "text": "3voies-1",
             "check": "String"
   
           }
@@ -59,12 +84,12 @@ Blockly.defineBlocksWithJsonArray([
   Blockly.defineBlocksWithJsonArray([
     {
       "type": "actionneur",
-      "message0": "Set actuator %1 on concentrator %4 to position %2 at %3 mm/s",
+      "message0": "Set actuator %1 on %4 to pos %2 at vel %3",
       "args0": [
         {
           "type": "field_number",
           "name": "id",
-          "value": 1,
+          "value": 0,
           "precision": 1
         },
         {
@@ -80,13 +105,13 @@ Blockly.defineBlocksWithJsonArray([
               "name": "speed",
               "value": 40,
               "min": 0,
-              "max": 50,
+              "max": 600,
               "precision": 1
             },
             {
               "type": "field_input",
               "name": "mqtt",
-              "text": "Concentrator-1",
+              "text": "Lineaire-1",
               "check": "String"
     
             }

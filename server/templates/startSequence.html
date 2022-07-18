@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Buttons</title>
+    <link href="{{url_for('static', filename = 'css/style.css')}}" rel="stylesheet">
+</head>
+<body>
+    <div class="flex-column">
+        <div class="flex-row">
+            {% for but in buttons %}
+                <a href="/button?b={{but}}" target="button_state" class="buttons" onclick="setTimeout('clearIframe(\'iframeButtonState\')',3000);">{{but}}</a>
+            {% endfor %}
+        </div>
+        <div>
+            <iframe id="iframeButtonState" src="" name="button_state" width="100%" height="40px" frameborder="0"></iframe></div></div>
+        </div>
+    </div>
+    <script>
+        //clear iframe
+        function clearIframe(iframe){
+            document.getElementById(iframe).src = ""
+        }
+    </script>
+    
+
+</body>
+</html>

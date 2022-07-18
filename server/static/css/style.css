@@ -1,0 +1,39 @@
+
+#fileList{
+    background-color: #ccc;
+    padding: 5px;
+    max-width: 33%;
+    margin: 15px;
+}
+
+#err_div{
+    color: rgb(127, 25, 25);
+}
+
+#buttonDiv{
+    width:30%;
+}
+
+.buttons{
+    width: 70px;
+    height: 70px;
+    border-radius: 99rem;
+    text-decoration: none;
+    background-color: rgb(79, 106, 228);
+    display: flex;
+    justify-content: center; /* align horizontal */
+    align-items: center; /* align vertical */
+    margin: 30px;
+    color: black;
+    font-weight: bolder;
+}
+
+.flex-column{
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row{
+    display: flex;
+    flex-direction: row;
+}

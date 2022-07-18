@@ -1,14 +1,16 @@
-<!DOCTYPE html>”
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <title>title</title>
+    <link href="{{url_for('static', filename = 'css/style.css')}}" rel="stylesheet">
+
     <!--<link rel="stylesheet" href="style.css">-->
-    <script src="https://unpkg.com/blockly/blockly.min.js"></script>
-    <!--<script src="js/blockly.min.js"></script>-->
-    <script src="js/moveToPosition.js"></script>
-    <script src="js/wait.js"></script>
-    <script src="js/translate.js"></script>
+    <!--<script src="https://unpkg.com/blockly/blockly.min.js"></script>-->
+    <script src="{{url_for('static', filename = 'js/blockly.min.js'}}"></script>
+    <script src="{{url_for('static', filename = 'js/moveToPosition.js')}}"></script>
+    <script src="{{url_for('static', filename = 'js/wait.js')}}"></script>
+    <script src="{{url_for('static', filename = 'js/translate.js')}}"></script>
     <!--<script src="js/files.js" onload="listFiles()"></script>-->
   </head>
   <body> 
@@ -30,8 +32,11 @@
         - Mauvaise checksum sur $1,0,100,40,50,23*110 (doit être 28)
     </div>
    
-
-    <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+    <div class="flex-row" style="width:100%;">
+        <div id="blocklyDiv" style="height: 480px; width: 900px;"></div>
+        <iframe id="iframeSequences" src="" name="iframeSequences" width="100%" height="200px" frameborder="0"></iframe>
+    </div>
+    
 
     <xml id="toolbox" style="display:none">
         <category name="Move" categorystyle="logic_category">
@@ -57,13 +62,15 @@
             <block type="loopForever"></block>
             <block type="sync"></block>
             <block type="home"></block>
+            <block type="homeOne"></block>
         </category>
         
     </xml>
 
     <script>
     </script>
-    <div class="flex-column">
+    
+    <!--<div class="flex-column">
         <div id="buttons" class="flex-row">
             <a href="/button?b=1" target="button_state" class="buttons" onclick="setTimeout('clearIframe(\'iframeButtonState\')',4000);">1</a>
             <a href="/button?b=2" target="button_state" class="buttons" onclick="setTimeout('clearIframe(\'iframeButtonState\')',4000);">2</a>
@@ -73,18 +80,59 @@
         <div>
             <iframe id="iframeButtonState" src="" name="button_state" width="100%" height="40px" frameborder="0"></iframe>
         </div>
-        <script>
-            //clear iframe
-            function clearIframe(iframe){
-                document.getElementById(iframe).src = ""
-            }
-            
-        </script>
-    </div>
-
+        
+    </div>-->
+   
 
     <div id="err_div"></div>
-    <input type="button" onclick="toJson()" value="Click"/>
+    <input type="button" onclick="toJson()" value="Generate code"/>
+    <input type="button" onclick="saveBlocks()" value="Save">
+    <input type="file" onchange="loadBlocks(this)" value="Load">
+    <input type="button" onchange="saveSequenceOnServer()" value="Save seq on server">
+
+    <script>
+        function saveSequenceOnServer(){
+            var json = Blockly.serialization.workspaces.save(Blockly.getMainWorkspace());
+            var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json));
+
+            var a = document.createElement('a');
+            a.href = 'data:' + data;
+            a.download = 'sequence.json';
+            a.innerHTML = 'download JSON';
+            a.click()
+        }
+
+        function saveBlocks(){
+            var json = Blockly.serialization.workspaces.save(Blockly.getMainWorkspace());
+            var data = JSON.stringify(json)//"text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json));
+
+            var a = document.createElement('a');
+            a.href = 'data:' + data;
+            a.download = 'sequence.json';
+            a.innerHTML = 'download JSON';
+            a.click()
+        }
+
+        function loadBlocks(e){
+        
+            // getting a hold of the file reference
+            //var file = e.target.files[0]; 
+            var file = e.files[0]; 
+
+            // setting up the reader
+            var reader = new FileReader();
+            reader.readAsDataURL(file); // this is reading as data url
+
+            // here we tell the reader what to do when it's done reading...
+            reader.onload = readerEvent => {
+                var content = readerEvent.target.result; // this is the content!
+                console.log(content)
+                console.log(JSON.parse(content))
+                //document.querySelector('#content').style.backgroundImage = 'url('+ content +')';
+                Blockly.serialization.workspaces.load(content);
+            }
+        }
+    </script>
     <!--<a href="/sequence?a=fileeeename&c=ceci_n_est_pas_important">Send data to esp</a>-->
     <div id="code_div"></div>
 
@@ -98,9 +146,10 @@
             
                     links = ""
                     for(f of files){
-                        links += `<a href="/start?c=${f}" target="iframeSequences" onclick="setTimeout(\"clearIframe('iframeSequences')\",4000)">${f}</a><br>`
+                        //links += `<a href="/start?c=${f}" target="iframeSequences" onclick="setTimeout(\"clearIframe('iframeSequences')\",4000)">${f}</a><br>`
+                        links += `<a href="/start?c=${f}" target="iframeSequences">${f}</a><br>`
                     }
-                    links += '<iframe id="iframeSequences" src="" name="iframeSequences" width="100%" height="40px" frameborder="0"></iframe>'
+                    //links += '<iframe id="iframeSequences" src="" name="iframeSequences" width="100%" height="100px" frameborder="0"></iframe>'
                     document.getElementById("fileList").innerHTML = links;
             
                     //document.getElementById('placeholder').innerHTML = xhr.responseText;
@@ -198,44 +247,5 @@
         
     </script>
   </body>
-  <style>
-      #fileList{
-          background-color: #ccc;
-          padding: 5px;
-          max-width: 33%;
-          margin: 15px;
-      }
 
-      #err_div{
-          color: rgb(127, 25, 25);
-      }
-
-      #buttonDiv{
-        width:30%;
-      }
-
-      .buttons{
-        width: 70px;
-        height: 70px;
-        border-radius: 99rem;
-        text-decoration: none;
-        background-color: rgb(79, 106, 228);
-        display: flex;
-        justify-content: center; /* align horizontal */
-        align-items: center; /* align vertical */
-        margin: 30px;
-        color: black;
-        font-weight: bolder;
-      }
-
-      .flex-column{
-        display: flex;
-        flex-direction: column;
-      }
-
-      .flex-row{
-        display: flex;
-        flex-direction: row;
-      }
-  </style>
 </html>
