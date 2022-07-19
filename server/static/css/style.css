@@ -6,6 +6,13 @@
     margin: 15px;
 }
 
+#fileList a{
+    text-decoration: dashed;
+    font-size: xx-large;
+    margin: 25px;
+    
+}
+
 #err_div{
     color: rgb(127, 25, 25);
 }
