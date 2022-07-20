@@ -4,14 +4,11 @@
     <meta charset="utf-8">
     <title>title</title>
     <link href="{{url_for('static', filename = 'css/style.css')}}" rel="stylesheet">
-
-    <!--<link rel="stylesheet" href="style.css">-->
-    <!--<script src="https://unpkg.com/blockly/blockly.min.js"></script>-->
     <script src="{{url_for('static', filename = 'js/blockly.min.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/moveToPosition.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/wait.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/translate.js')}}"></script>
-    <!--<script src="js/files.js" onload="listFiles()"></script>-->
+    <script src="{{url_for('static', filename = 'js/files.js')}}"></script>
   </head>
   <body> 
     <script>
@@ -86,9 +83,14 @@
 
     <div id="err_div"></div>
     <input type="button" onclick="toJson()" value="Generate code"/>
-    <input type="button" onclick="saveBlocks()" value="Save">
-    <input type="file" onchange="loadBlocks(this)" value="Load">
+    <input type="button" onclick="saveBlocks()" value="Save blocks">
+    <input type="file" onchange="loadBlocks(this)" value="Load blocks">
     <input type="button" onchange="saveSequenceOnServer()" value="Save seq on server">
+
+    <form id="uploadbanner" enctype="multipart/form-data" method="post" action="/saveSeq">
+        <input id="file" name="file" type="file" />
+        <input type="submit" value="submit" id="submit" />
+     </form>
 
     <script>
         function saveSequenceOnServer(){

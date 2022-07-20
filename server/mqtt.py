@@ -10,7 +10,7 @@ class mqtt:
     topic = "/savonnerie/"
     # generate client ID with pub prefix randomly
     client_id = f'python-mqtt-{random.randint(0, 1000)}'
-    #username = 'emqx'
+    #username = 'username'
     #password = 'public'
     mqtt_is_connected = 0
 
@@ -39,7 +39,8 @@ class mqtt:
 
     def scanButton(self, filename):
         but = {}
-        with open("templates/s/"+filename, "r+") as file1:
+        print(filename)
+        with open(filename, "r+") as file1:
             # Reading from a file
             lines = file1.read().split("\n")
             for line in lines:
@@ -66,8 +67,8 @@ class mqtt:
             print(f"Failed to send message to topic {topic}")
 
     def readFileAndSendCmd(self, filename):
-
-        with open("templates/s/"+filename, "r+") as file1:
+        print(filename)
+        with open(filename, "r+") as file1:
             # Reading from a file
             lines = file1.read().split("\n")
             for line in lines:
