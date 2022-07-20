@@ -1,5 +1,8 @@
 # blockyInterface
 
+## Setup
+create a directory `your_seq` in server
+
 ## Set computer as hotspot
 With hostapd and udhcpd 
 do this for address 192.168.8.1
