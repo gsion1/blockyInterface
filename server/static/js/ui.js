@@ -5,11 +5,11 @@
  * @return {number} The new state : 0 for display :none, 1 for display : block
  */
 function toggleVisibility(idOfTheElement){
-    if(document.getElementById(idOfTheElement).style.display != "block"){
-        document.getElementById(idOfTheElement).style.display = "block"
+    if(document.getElementById(idOfTheElement).style.maxWidth != "100%"){
+        document.getElementById(idOfTheElement).style.maxWidth = "100%"
         return 1
     }else {
-        document.getElementById(idOfTheElement).style.display = "none"
+        document.getElementById(idOfTheElement).style.maxWidth = "0%"
         return 0
     }
 }

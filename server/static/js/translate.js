@@ -3,62 +3,90 @@
  * @param {*} blockList 
  * @returns {number} 0 on error, 1 on success
  */
-function translateBlockyToFile(blockList){
-    //console.log("start translating")
-    output = ""
 
-    document.getElementById("err_div").innerHTML = "";  //reset err and code div
-    document.getElementById("code_div").innerHTML = "";
+function translateBlocksToTxt(blockList){
+    output = ""
 
     for(k of Object.keys(blockList)){
         elt = Blockly.getMainWorkspace().getBlockById(k)
-        //console.log(elt, elt.type)
-        /*if(elt.type == 'controls_repeat'){
-            code += "LOOP="+elt.getFieldValue('TIMES') + "</br>"
-            children = data[k]
-            for(child of Object.keys(children)){
-                c_elt = Blockly.getMainWorkspace().getBlockById(child)
-                code +=  writeLine(c_elt,1) //????
-            }
-        }*/
-        let line = writeLine(elt,1)
-        if(line != "err"){
-            output += line;
+        
+        let line = writeLine(elt)
+        if(line != 0){
+            output += "<code>"+line+"</code>";
         } else {
             return 0;
         }
         
     }
     console.log(output)
-    document.getElementById('code_div').innerHTML = output    
-}
+    document.getElementById('codeOutput').innerHTML = output
 
-function extractFromWaitBlock(data){
-    elt.getFieldValue('delay')
-}   
+    return 1
+}
 
 /**
  * Convert a blockly element to txt line
  * @param {*} elt 
- * @param {*} separator 
  * @returns {string} String to be interpreted by the server
  */
-function writeLine(elt, separator){
-    let err = 0;
+function writeLine(elt, loopValue=undefined){
+    line = ""
+    /****************** DO MOVES ON ACTUATORS ********************/
+    if(elt.type == '3Voies')
+        line = writeCmd_3v(elt)
+    else if(elt.type == 'actuator')
+        line = writeCmd_actuator(elt,loopValue)
+    
+    /******************  LOOPs and CONDITIONS ******************/
+    else if(elt.type == "for"){
+        //console.log("==>", elt.getChildren())  
+        //console.log("==>", elt.getDescendants())
+        let children = getChildren(elt)//childBlocks_  // not working
+        if(children == 0)
+            return 0
 
-    if(elt.type == '3Voies'){
-        line = `$1,${elt.getFieldValue('id')},${elt.getFieldValue('pos')}`
-        line += "*"+ calcChecksum(line).toString()
-        line = `${elt.getFieldValue('mqtt')}=${line}`
-    } else if(elt.type == 'actionneur'){
-        line = `$1,${elt.getFieldValue('id')},${elt.getFieldValue('pos')},${elt.getFieldValue('speed')},80,23`
-        line += "*"+ calcChecksum(line).toString()
-        line = `${elt.getFieldValue('mqtt')}=${line}`
-    } else if(elt.type == 'atTheSameTime'){
-        line = `ATTHESAMETIME l=`
+        console.log("children",children)
+        startVal = parseFloat(elt.getFieldValue('startValue'))
+        stopVal = parseFloat(elt.getFieldValue('stopValue'))
+        inc = parseFloat(elt.getFieldValue('increment'))
+        counter = 0;
+
+        if(inc >= 0) {
+            for(i = startVal; i < stopVal; i+= inc){
+                for(child of children){
+                    console.log("child",child)
+                    line += writeLine(child, i)
+
+                }
+                counter ++;
+                if(counter > 2000){ //timeout, maybe an error
+                    showError("Your for loop is invalid or there is more than 2k iterations")
+                    return 0
+                }
+            }
+            
+        } else {
+            for(i = startVal; i > stopVal; i-= Math.abs(inc)){
+                for(child of children){
+                    console.log("child",child)
+                    line += writeLine(child, i)
+
+                }
+                counter ++;
+                if(counter > 2000){ //timeout, maybe an error
+                    showError("Your for loop is invalid or there is more than 2k iterations")
+                    return 0
+                }
+            } 
+        }
+        
+
+    }
+    else if(elt.type == 'atTheSameTime'){
+        /*line = `ATTHESAMETIME l=`
         let children = elt.childBlocks_
         if(children.length == 0){
-            translationErr("\"At the same Time\" block cannot be empty");
+            showError("\"At the same Time\" block cannot be empty");
             err = 1;
         }
         if( !err ){
@@ -66,23 +94,24 @@ function writeLine(elt, separator){
                 if((child.type == "actionneur" || child.type == "3Voies") && !err) //not pause in this block, we can't pause while doing anothe thing
                 {   
                     //console.log("hey", child.type)
-                    line += writeLine(child,0)
+                    line += writeLine(child)
                 }
                 else {
-                    translationErr("You can only place blocks from move tab in a \"At the same Time\" block")
+                    showError("You can only place blocks from move tab in a \"At the same Time\" block")
                     err = 1;
                 }
             }
-        }
+        }*/
+        showError("ERROR - Not yet implemented")
+        return 0
         
-        //write only one line to be executed at the same time "l" is the line to be sent
     } else if(elt.type == 'loopForever'){
         let children = elt.childBlocks_
         //console.log("children",children)
         line = `LOOPFOREVER`
         for(child of children){
             console.log("child",child)
-            line += writeLine(child,0)
+            line += writeLine(child)
         }
         //be careful, everything after this block won't execute
 
@@ -92,54 +121,54 @@ function writeLine(elt, separator){
         console.log("elt.",elt)
         line = `SYNC`
         for(child of children){
-            //console.log("chiiiiiiiillllld")
-            if(child.type == "actionneur"  && !err){
-                //console.log("child",child)
-                line += writeLine(child,0)
+            if(child.type == "actionneur"){
+                line += writeLine(child)
             } else {
-                translationErr("You can only place \"actuator\" blocks in a \"synchronize\" one")
-                err=1
+                showError("You can only place \"actuator\" blocks in a \"synchronize\" one")
+                return 0
             }
             
         }
-        
-    } else if(elt.type == 'waitS'){
-        line = `Pause=${elt.getFieldValue('delay')}`
-        //code += "S,"+elt.getFieldValue('delay') + "</br>"
-    } else if(elt.type == 'waitM'){
-        line = `Pause=${elt.getFieldValue('delay')*60}`
-        //code += "M,"+elt.getFieldValue('delay') + "</br>"
-    } else if(elt.type == 'waitH'){
-        line = `Pause=${elt.getFieldValue('delay')*3600}`
-        //code += "H,"+elt.getFieldValue('delay') + "</br>"
-        
-    } else if(elt.type == 'waitButton'){
-        line = `WaitForButton=${elt.getFieldValue('button')}`
+    /******************  WAIT CMDS *********************/
+    } else if(["waitS","waitM", "waitH", "waitButton"].includes(elt.type)){
+        line = writeCmd_wait(elt)
 
+    /******************** HOMING ****************/
     } else if(elt.type == 'home') {
-        line = `HOMEALL`
+        //line = `HOMEALL` //not safe to be implemented yet. Not all actuators should be homed in the same direction
     }
     else if(elt.type == 'homeOne') {
-        line = `${elt.getFieldValue('mqtt')}=$3,1,h*106`
+        line = writeCmd_home(elt)
     }
 
     //return code
-    return  line + (separator?"<br>":"")
+    return  "<code>"+line+"</code>"
 }
 
-/**
- * Compute the checksum for the actuators 
- * @param {string} str 
- * @returns {number} checksum
- */
-function calcChecksum(str){
-    let chksum = 0;
-    for(let c of str){
-        if(c != "$") //ignore $
-            chksum = chksum ^ c.charCodeAt(0);
+function getChildren(elt){
+    let descendants = elt.getDescendants(1)
+    let children = []
+    if(descendants.length > 0){
+        for(d of descendants){
+            sParent = d.getSurroundParent()
+            if(sParent != null) {
+                console.log( elt.id)
+                console.log(sParent)
+                if(sParent.id == elt.id){
+                    console.log("parent")
+                    children.push(d)
+                }
+            }
+        }
+        return children
     }
-    return chksum
+    
+    showError("ERROR - There is one empty block")
+    return 0
+    
+        
 }
+
 
 function testPurposes(){
     res = ""
@@ -151,11 +180,4 @@ function testPurposes(){
     }console.log(res)
 }
 
-/**
- * Display the error in code div
- * @param {String} text 
- */
-function showError(text){
-    //document.getElementById("err_div").
-    document.getElementById("code_div").innerHTML = "<code>ERROR</code><code>"+text+"<code>";
-}
+

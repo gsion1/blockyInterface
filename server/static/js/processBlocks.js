@@ -4,33 +4,29 @@
  */
  function generateSequenceFromBlocks(){
     //get the blocks from blockly
-    blockList = {}
-    var xml = Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace());
+    //var xml = Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace());
     var json = Blockly.serialization.workspaces.save(Blockly.getMainWorkspace())
     var blocks = Blockly.getMainWorkspace().getTopBlocks();
 
     //disallow two starting blocks or we won't be able to know which one to choose
     //we can't "parallize", there is no sense 
     if(blocks.length > 1){
-        document.getElementById('err_div').innerHTML = "There can be only one starting block"
+        showError("There can be only one starting block")
         console.log("too much starting blocks")
         return 0
     }
 
     //save
-    var state = Blockly.serialization.blocks.save(
-            blocks[0], {addCoordinates: false, doFullSerialization: true});
-    
+    //var state = Blockly.serialization.blocks.save(blocks[0], {addCoordinates: false, doFullSerialization: true});
 
-    temp = {}
-    parseNext(json.blocks.blocks[0]) 
-    blockList = {...tem}
-    console.log(json.blocks)
+    blockList = {}  //reset var
+    parseNext(json.blocks.blocks[0]) //parse all blocks after the starting one
+    console.log(blockList)
 
-    parseChild(json.blocks.blocks)
+    //parseChild(json.blocks.blocks)
     
     console.log(blockList)
-    translateBlockyToFile(blockList)
+    translateBlocksToTxt(blockList)
     return 1
 }
 
@@ -40,7 +36,7 @@
  */
 function parseNext(block){
     console.log("next",block.next)
-    temp[block.id] = ""
+    blockList[block.id] = ""
     if(block.next != undefined){
         parseNext(block.next.block)
     }
@@ -49,21 +45,9 @@ function parseNext(block){
  * Parse all the childs of the given block, usually the first block
  * @param {*} blocks 
  */
+/*
 function parseChild(blocks){
             
-    /*
-    parents = Blockly.getMainWorkspace().getBlocksByType("controls_repeat")
-    for(p of parents){
-        child = p.childBlocks_
-        ids = []
-        
-        for(c of child){
-            ids.push(c.id)
-            console.log("child id", c.id, c.type)
-        }
-        blockList[p.id]=ids
-        
-    }*/
     for(b of blocks) {
         if(b.type == 'controls_repeat' || b.type=="sync"){
             temp = {}
@@ -74,7 +58,7 @@ function parseChild(blocks){
         }
     }
 
-}
+}*/
 
 /**
  * Save blockly as JSON file on the client
@@ -112,4 +96,13 @@ function loadBlocks(e){
         //document.querySelector('#content').style.backgroundImage = 'url('+ content +')';
         Blockly.serialization.workspaces.load(content);
     }
+}
+
+/**
+ * Display the error in code div
+ * @param {String} text 
+ */
+ function showError(text){
+    //document.getElementById("err_div").
+    document.getElementById("codeOutput").innerHTML = "<code>ERROR</code><code>"+text+"<code>";
 }

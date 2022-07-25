@@ -6,20 +6,20 @@
     <link href="{{url_for('static', filename = 'css/style.css')}}" rel="stylesheet">
     <link href="{{url_for('static', filename = 'css/blocklyPopup.css')}}" rel="stylesheet">
     <script src="{{url_for('static', filename = 'js/blockly.min.js')}}"></script>
-    <script src="{{url_for('static', filename = 'js/moveToPosition.js')}}"></script>
-    <script src="{{url_for('static', filename = 'js/wait.js')}}"></script>
+    <script src="{{url_for('static', filename = 'js/blocks/blocksMove.js')}}"></script>
+    <script src="{{url_for('static', filename = 'js/blocks/blocksWait.js')}}"></script>
+    <script src="{{url_for('static', filename = 'js/blocks/blocksLoopsAndLogic.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/translate.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/files.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/processBlocks.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/ui.js')}}"></script>
+    <script src="{{url_for('static', filename = 'js/writeCmds.js')}}"></script>
   </head>
   <body> 
 
     
-    <script>
-        //Todo list, hidden by default
-        
-    </script>
+
+    <!--Todo list, hidden by default-->
     <button onclick="toggleVisibility('todo')">Todo</button>
 
     <div id="todo" style="display: none;">
@@ -30,6 +30,7 @@
         - Mauvaise checksum sur $1,0,100,40,50,23*110 (doit être 28)
     </div>
    
+    <!--Show the seqeunces stored on the server-->
     <div class="flex-row" style="width:100%;">
         <iframe id="iframeSequences" src="" name="iframeSequences" width="100%" height="200px" frameborder="0"></iframe>
     </div>
@@ -39,7 +40,7 @@
     <xml id="toolbox" style="display:none">
         <category name="Move" categorystyle="logic_category">
             <block type="3Voies"></block>
-            <block type="actionneur"></block>
+            <block type="actuator"></block>
         </category>
         <category name="Wait" categorystyle="text_category">
             <block type="waitS"></block>
@@ -49,28 +50,28 @@
         </category>
         <category name="Main" categorystyle="loop_category">
             <block type="controls_repeat">
-            <value name="TIMES">
+            <!--<value name="TIMES">-->
             <!--<shadow type="math_number">
                 <field name="NUM">5</field>
             </shadow>-->
             </value>
             </block>
-            
+            <block type="for"></block>
             <block type="atTheSameTime"></block>
             <block type="loopForever"></block>
             <block type="sync"></block>
-            <block type="home"></block>
+            <!--<block type="home"></block>--> <!--ambiguous : which direction (+ or -), which topic ? Not safe enougth-->
             <block type="homeOne"></block>
         </category>   
     </xml>
 
     <input type="button" id="openCloseBlockly" onclick="toggleEditor()" value="✎ Open editor">
     <!-- Not displayed by default, blockly editor-->
-    <div id="blocklyPopup" class="flex-col blurred hidden">
+    <div id="blocklyPopup" class="flex-col blurred">
         <div class="flex-row">
             <div id="blocklyDiv" style="height: 480px; width: 900px;"></div>
-            <div id="code_div">
-                <pre class="code"><code>Click on generate first</code><code>The output code will be shown here</code></pre>
+            <div id="codeDiv">
+                <pre id="codeOutput" class="code"><code>Click on generate first</code><code>The output code will be shown here</code></pre>
             </div>
         </div>
         <br>
@@ -99,21 +100,12 @@
     <div id="fileList"></div><br>
     
     <script>
-         listFiles()//fill the div with programs available on the microcontroler      
+        listFiles()//show sequences stored on the server    
 
-        /*
-        function parseAllChildren(parent, data){
-            if(data.next != undefined){
-                parseNext(data.next.block)
-            }
-            
-        }*/
-
-        let temporary={}
-
+        //Show blockly workbench 
         Blockly.inject('blocklyDiv', {
-        toolbox: document.getElementById('toolbox'),
-        scrollbars: false
+            toolbox: document.getElementById('toolbox'),
+            scrollbars: false
         });
 
         let blockList = {}
