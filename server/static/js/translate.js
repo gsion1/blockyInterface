@@ -1,43 +1,51 @@
-function translateBlockyToFile(data){
+/**
+ * 
+ * @param {*} blockList 
+ * @returns {number} 0 on error, 1 on success
+ */
+function translateBlockyToFile(blockList){
     //console.log("start translating")
-    code = ""
-    document.getElementById("err_div").innerHTML = "";
-    document.getElementById("code_div").style.display = "block";
-    for(k of Object.keys(data)){
+    output = ""
+
+    document.getElementById("err_div").innerHTML = "";  //reset err and code div
+    document.getElementById("code_div").innerHTML = "";
+
+    for(k of Object.keys(blockList)){
         elt = Blockly.getMainWorkspace().getBlockById(k)
         //console.log(elt, elt.type)
-        if(elt.type == 'controls_repeat'){
+        /*if(elt.type == 'controls_repeat'){
             code += "LOOP="+elt.getFieldValue('TIMES') + "</br>"
             children = data[k]
             for(child of Object.keys(children)){
                 c_elt = Blockly.getMainWorkspace().getBlockById(child)
                 code +=  writeLine(c_elt,1) //????
             }
-            looping = 0
-        }
+        }*/
         let line = writeLine(elt,1)
         if(line != "err"){
-           code += line;
+            output += line;
         } else {
-            return;
+            return 0;
         }
         
     }
-    //console.log(code)
-    document.getElementById('code_div').innerHTML = code
-
-    /*send it to esp*/
-    
+    console.log(output)
+    document.getElementById('code_div').innerHTML = output    
 }
 
 function extractFromWaitBlock(data){
     elt.getFieldValue('delay')
 }   
 
+/**
+ * Convert a blockly element to txt line
+ * @param {*} elt 
+ * @param {*} separator 
+ * @returns {string} String to be interpreted by the server
+ */
 function writeLine(elt, separator){
     let err = 0;
-    //code = looping+","
-    //code = "_,".repeat(looping)
+
     if(elt.type == '3Voies'){
         line = `$1,${elt.getFieldValue('id')},${elt.getFieldValue('pos')}`
         line += "*"+ calcChecksum(line).toString()
@@ -119,6 +127,11 @@ function writeLine(elt, separator){
     return  line + (separator?"<br>":"")
 }
 
+/**
+ * Compute the checksum for the actuators 
+ * @param {string} str 
+ * @returns {number} checksum
+ */
 function calcChecksum(str){
     let chksum = 0;
     for(let c of str){
@@ -138,7 +151,11 @@ function testPurposes(){
     }console.log(res)
 }
 
-function translationErr(text){
-    document.getElementById("err_div").innerHTML = text;
-    document.getElementById("code_div").style.display = "none";
+/**
+ * Display the error in code div
+ * @param {String} text 
+ */
+function showError(text){
+    //document.getElementById("err_div").
+    document.getElementById("code_div").innerHTML = "<code>ERROR</code><code>"+text+"<code>";
 }
