@@ -2,25 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>title</title>
+    <title>Thingva UI</title>
     <link href="{{url_for('static', filename = 'css/style.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename = 'css/blocklyPopup.css')}}" rel="stylesheet">
     <script src="{{url_for('static', filename = 'js/blockly.min.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/moveToPosition.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/wait.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/translate.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/files.js')}}"></script>
+    <script src="{{url_for('static', filename = 'js/processBlocks.js')}}"></script>
+    <script src="{{url_for('static', filename = 'js/ui.js')}}"></script>
   </head>
   <body> 
+
+    
     <script>
-        function toggleTodoVisibility(){
-            if(document.getElementById('todo').style.display == "none"){
-                document.getElementById('todo').style.display = "block"
-            }else {
-                document.getElementById('todo').style.display = "none"
-            }
-        }
+        //Todo list, hidden by default
+        
     </script>
-    <button onclick="toggleTodoVisibility()">Todo</button>
+    <button onclick="toggleVisibility('todo')">Todo</button>
+
     <div id="todo" style="display: none;">
         TODO:<br>
         - Vérifier que tout soit bien parsé par les fonctions dans blockly.html
@@ -30,11 +31,11 @@
     </div>
    
     <div class="flex-row" style="width:100%;">
-        <div id="blocklyDiv" style="height: 480px; width: 900px;"></div>
         <iframe id="iframeSequences" src="" name="iframeSequences" width="100%" height="200px" frameborder="0"></iframe>
     </div>
     
 
+    <!--Blockly toolbox -->
     <xml id="toolbox" style="display:none">
         <category name="Move" categorystyle="logic_category">
             <block type="3Voies"></block>
@@ -60,119 +61,45 @@
             <block type="sync"></block>
             <block type="home"></block>
             <block type="homeOne"></block>
-        </category>
-        
+        </category>   
     </xml>
 
-    <script>
-    </script>
-    
-    <!--<div class="flex-column">
-        <div id="buttons" class="flex-row">
-            <a href="/button?b=1" target="button_state" class="buttons" onclick="setTimeout('clearIframe(\'iframeButtonState\')',4000);">1</a>
-            <a href="/button?b=2" target="button_state" class="buttons" onclick="setTimeout('clearIframe(\'iframeButtonState\')',4000);">2</a>
-            <a href="/button?b=3" target="button_state" class="buttons" onclick="setTimeout('clearIframe(\'iframeButtonState\')',4000);">3</a>
-            <a href="/button?b=4" target="button_state" class="buttons" onclick="setTimeout('clearIframe(\'iframeButtonState\')',4000);">4</a>
+    <input type="button" id="openCloseBlockly" onclick="toggleEditor()" value="✎ Open editor">
+    <!-- Not displayed by default, blockly editor-->
+    <div id="blocklyPopup" class="flex-col blurred hidden">
+        <div class="flex-row">
+            <div id="blocklyDiv" style="height: 480px; width: 900px;"></div>
+            <div id="code_div">
+                <pre class="code"><code>Click on generate first</code><code>The output code will be shown here</code></pre>
+            </div>
         </div>
+        <br>
+        <!--<div id="err_div"></div>-->
         <div>
-            <iframe id="iframeButtonState" src="" name="button_state" width="100%" height="40px" frameborder="0"></iframe>
+            <label>Save or load blocks from your device</label><br>
+            <input type="button" onclick="saveBlocks()" value="Save blocks">
+            <input type="file" onchange="loadBlocks(this)" value="Load blocks">
         </div>
-        
-    </div>-->
+        <br>
+        <div>
+            <label>Generate and save on the server</label><br>
+            <input type="button" onclick="generateSequenceFromBlocks()" value="Generate code"/>
+            <input type="button" onchange="saveSequenceOnServer()" value="Save seq on server">
+        </div>
+        <br>
+        <div>
+            <label>Import sequence from your device<label><br>
+            <form id="uploadbanner" enctype="multipart/form-data" method="post" action="/saveSeq">
+                <input id="file" name="file" type="file" />
+                <input type="submit" value="submit" id="submit" />
+            </form>
+        </div>
+    </div>
    
-
-    <div id="err_div"></div>
-    <input type="button" onclick="toJson()" value="Generate code"/>
-    <input type="button" onclick="saveBlocks()" value="Save blocks">
-    <input type="file" onchange="loadBlocks(this)" value="Load blocks">
-    <input type="button" onchange="saveSequenceOnServer()" value="Save seq on server">
-
-    <form id="uploadbanner" enctype="multipart/form-data" method="post" action="/saveSeq">
-        <input id="file" name="file" type="file" />
-        <input type="submit" value="submit" id="submit" />
-     </form>
-
-    <script>
-        function saveSequenceOnServer(){
-            var json = Blockly.serialization.workspaces.save(Blockly.getMainWorkspace());
-            var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json));
-
-            var a = document.createElement('a');
-            a.href = 'data:' + data;
-            a.download = 'sequence.json';
-            a.innerHTML = 'download JSON';
-            a.click()
-        }
-
-        function saveBlocks(){
-            var json = Blockly.serialization.workspaces.save(Blockly.getMainWorkspace());
-            var data = JSON.stringify(json)//"text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json));
-
-            var a = document.createElement('a');
-            a.href = 'data:' + data;
-            a.download = 'sequence.json';
-            a.innerHTML = 'download JSON';
-            a.click()
-        }
-
-        function loadBlocks(e){
-        
-            // getting a hold of the file reference
-            //var file = e.target.files[0]; 
-            var file = e.files[0]; 
-
-            // setting up the reader
-            var reader = new FileReader();
-            reader.readAsDataURL(file); // this is reading as data url
-
-            // here we tell the reader what to do when it's done reading...
-            reader.onload = readerEvent => {
-                var content = readerEvent.target.result; // this is the content!
-                console.log(content)
-                console.log(JSON.parse(content))
-                //document.querySelector('#content').style.backgroundImage = 'url('+ content +')';
-                Blockly.serialization.workspaces.load(content);
-            }
-        }
-    </script>
-    <!--<a href="/sequence?a=fileeeename&c=ceci_n_est_pas_important">Send data to esp</a>-->
-    <div id="code_div"></div>
-
     <div id="fileList"></div><br>
-    <script> //fill the div with programs available on the microcontroler        
-        function listFiles(){
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    files = xhr.responseText.split(",")
-            
-                    links = ""
-                    for(f of files){
-                        //links += `<a href="/start?c=${f}" target="iframeSequences" onclick="setTimeout(\"clearIframe('iframeSequences')\",4000)">${f}</a><br>`
-                        links += `<a href="/start?c=${f}" target="iframeSequences">${f}</a><br>`
-                    }
-                    //links += '<iframe id="iframeSequences" src="" name="iframeSequences" width="100%" height="100px" frameborder="0"></iframe>'
-                    document.getElementById("fileList").innerHTML = links;
-            
-                    //document.getElementById('placeholder').innerHTML = xhr.responseText;
-                }
-            }
-            xhr.open('GET', 'listFile');
-            xhr.send();
-        }
-        listFiles()
-    </script>
-
+    
     <script>
-         
-
-        function parseNext(data){
-            console.log("next",data.next)
-            temporary[data.id] = ""
-            if(data.next != undefined){
-                parseNext(data.next.block)
-            }
-        }
+         listFiles()//fill the div with programs available on the microcontroler      
 
         /*
         function parseAllChildren(parent, data){
@@ -183,67 +110,11 @@
         }*/
 
         let temporary={}
-        function parseChild(blocks){
-            
-            /*
-            parents = Blockly.getMainWorkspace().getBlocksByType("controls_repeat")
-            for(p of parents){
-                child = p.childBlocks_
-                ids = []
-                
-                for(c of child){
-                    ids.push(c.id)
-                    console.log("child id", c.id, c.type)
-                }
-                blockList[p.id]=ids
-                
-            }*/
-            for(b of blocks) {
-                if(b.type == 'controls_repeat' || b.type=="sync"){
-                    temporary = {}
-                    parseNext(b.inputs.DO.block)
-                    blockList[b.id] = {...temporary}
-                    //list = parseAllChildren()
-                    //console.log("alle",list)
-                }
-            }
-
-        }
-
 
         Blockly.inject('blocklyDiv', {
         toolbox: document.getElementById('toolbox'),
         scrollbars: false
         });
-
-        function toJson(){
-            blockList = {}
-            var xml = Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace());
-            var json = Blockly.serialization.workspaces.save(Blockly.getMainWorkspace())
-            var blocks = Blockly.getMainWorkspace().getTopBlocks();
-
-            if(blocks.length > 1){
-                document.getElementById('err_div').innerHTML = "There can be only one starting block"
-                console.log("too much starting blocks")
-                return
-            }
-
-            //save
-            var state = Blockly.serialization.blocks.save(
-                    blocks[0], {addCoordinates: false, doFullSerialization: true});
-            
-            temporary = {}
-            parseNext(json.blocks.blocks[0]) 
-            blockList = {...temporary}
-            console.log(json.blocks)
-
-            //for(k of Object.keys(blockList)) {
-               
-            parseChild(json.blocks.blocks)
-            //}
-            console.log(blockList)
-            translateBlockyToFile(blockList)
-        }
 
         let blockList = {}
         
