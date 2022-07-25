@@ -5,6 +5,7 @@
     <title>Thingva UI</title>
     <link href="{{url_for('static', filename = 'css/style.css')}}" rel="stylesheet">
     <link href="{{url_for('static', filename = 'css/blocklyPopup.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename = 'css/tabs.css')}}" rel="stylesheet">
     <script src="{{url_for('static', filename = 'js/blockly.min.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/blocks/blocksMove.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/blocks/blocksWait.js')}}"></script>
@@ -14,13 +15,18 @@
     <script src="{{url_for('static', filename = 'js/processBlocks.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/ui.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/writeCmds.js')}}"></script>
+    <link rel="icon" href="{{url_for('static', filename = 'img/favicon.ico')}}" />
+
   </head>
   <body> 
 
-    
+    <!--TopBar-->
+    <div id="topbar">
+        Thingva Simple Automation
+    </div>
 
     <!--Todo list, hidden by default-->
-    <button onclick="toggleVisibility('todo')">Todo</button>
+    <!--<button onclick="toggleVisibility('todo')">Todo</button>
 
     <div id="todo" style="display: none;">
         TODO:<br>
@@ -28,12 +34,31 @@
         - Acceder à tous les enfants dans les fonctions avec childBlocks_<br>
         - Sur les synchro, vérifier que chaque actionneur n'y soit qu'une fois
         - Mauvaise checksum sur $1,0,100,40,50,23*110 (doit être 28)
-    </div>
+    </div>-->
+
    
     <!--Show the seqeunces stored on the server-->
-    <div class="flex-row" style="width:100%;">
-        <iframe id="iframeSequences" src="" name="iframeSequences" width="100%" height="200px" frameborder="0"></iframe>
+    <div class="flex-row">
+        <div class="flex-col" style="width:30%;">  
+            <div class="tab ">
+                <button class="tablinks" onclick="openTab(event, 'tab_yourSeq')">Your sequences</button>
+                <button class="tablinks" onclick="openTab(event, 'tab_ThingvaEx')">Thingva examples</button>
+            </div>
+            <div id="tab_yourSeq" class="tabcontent">
+                <div class="fileList" id="fileListExamples"></div>
+            </div>
+            
+            <div id="tab_ThingvaEx" class="tabcontent">
+                <div class="fileList" id="fileListYourSeq"></div>
+            </div>
+                
+        </div>
+        <div>
+            <h3 class="title">Control pannel</h3>
+            <iframe id="iframeSequences" src="" name="iframeSequences" width="100%" height="200px" frameborder="0"></iframe>
+        </div>
     </div>
+
     
 
     <!--Blockly toolbox -->
@@ -69,7 +94,7 @@
     <!-- Not displayed by default, blockly editor-->
     <div id="blocklyPopup" class="flex-col blurred">
         <div class="flex-row">
-            <div id="blocklyDiv" style="height: 480px; width: 900px;"></div>
+            <div id="blocklyDiv" style="height: 480px; width: 70%;"></div>
             <div id="codeDiv">
                 <pre id="codeOutput" class="code"><code>Click on generate first</code><code>The output code will be shown here</code></pre>
             </div>
@@ -97,11 +122,11 @@
         </div>
     </div>
    
-    <div id="fileList"></div><br>
+    
     
     <script>
         listFiles()//show sequences stored on the server    
-
+        openTabStartUp() //open first tab
         //Show blockly workbench 
         Blockly.inject('blocklyDiv', {
             toolbox: document.getElementById('toolbox'),

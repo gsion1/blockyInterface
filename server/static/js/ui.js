@@ -19,3 +19,32 @@ function toggleEditor(){
     let txt = ['✎ Open editor', '✖ Close editor']
         document.getElementById('openCloseBlockly').value = txt[state]
 }
+
+/**************** TABS ****************/
+function openTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    if(evt != undefined)
+      evt.currentTarget.className += " active";
+  }
+
+  function openTabStartUp(){
+    var url = window.location.href;
+    var tab = 0
+    try{
+        let searchParams = new URLSearchParams(url);
+        var tab = parseInt(searchParams.get("tab"));
+        if(isNaN(tab)){ tab = 0}
+    }
+    finally {
+        document.getElementsByClassName('tablinks')[tab].click() //open tab
+    }
+}

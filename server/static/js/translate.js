@@ -145,6 +145,11 @@ function writeLine(elt, loopValue=undefined){
     return  "<code>"+line+"</code>"
 }
 
+/**
+ * Get children inside a block
+ * @param {*} elt 
+ * @returns {list} List of children
+ */
 function getChildren(elt){
     let descendants = elt.getDescendants(1)
     let children = []
@@ -163,7 +168,7 @@ function getChildren(elt){
         return children
     }
     
-    showError("ERROR - There is one empty block")
+    showError("ERROR - There is at least one empty block")
     return 0
     
         

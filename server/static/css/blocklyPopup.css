@@ -1,15 +1,18 @@
 #blocklyPopup{
     background-color: rgb(247, 247, 247);
     position: absolute;
-    top: 5vh;
+    top: 8vh;
     left: 5;
-    width: 90%;
-    height: 90vh;
-    overflow-y: scroll;
+    width: 100%;
+    height: 85vh;
+    overflow: hidden;
     max-width: 0%;
     transition: all 0.5s;
 }
 
+#blocklyDiv{
+    width:70%;
+}
 
 .blurred {
 	position: relative;
