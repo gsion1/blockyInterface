@@ -13,6 +13,7 @@ class mqtt:
     #username = 'username'
     #password = 'public'
     mqtt_is_connected = 0
+    seqenceState = 'STOP'
 
     def __init__(self):
         self.client = self.connect_mqtt()
@@ -34,8 +35,21 @@ class mqtt:
         client.connect(self.broker, self.port)
         return client
 
+    #buttons defined by the user
+    #won't update the button if paused
     def setButton(self,name):
-        self.buttons[str(name)] = 1
+        if self.seqenceState == "PLAY":
+            self.buttons[str(name)] = 1
+            return 1
+        return 0
+
+    #PLAY / PAUSE / STOP
+    def setImportantButton(self,state, force=False):
+        if not (self.seqenceState in ['STOP','OVER'] and state == 'PLAY') or force == True:
+            self.seqenceState = str(state) #'STOP' 'PLAY' or 'PAUSE'
+            print("seq state", self.seqenceState)
+            return 1
+        return 0
 
     def scanButton(self, filename):
         but = {}
@@ -68,39 +82,40 @@ class mqtt:
 
     def readFileAndSendCmd(self, filename):
         print(filename)
-        with open(filename, "r+") as file1:
-            # Reading from a file
-            lines = file1.read().split("\n")
-            for line in lines:
-                line = line.split(";")[0] #ignore comments
-                if(line != ""):
-                    if(line.find("\n") == -1):
-                        line += "\n"
-                    line = line.split("=")
-                    target = line[0]
-                    arg = line[1]
-                    if target == 'Pause':
-                        print("paused for ", arg.replace("\n",""), "s")
-                        time.sleep(float(arg))
-                    elif target == "WaitForButton":
-                        #reset button state first
-                        arg=str(arg).replace("\n","")
-                        self.buttons[arg]=0
-                        print("wait for button" + arg)
-                        print(self.buttons)
-                        while not self.buttons[arg]:
+        while self.seqenceState == 'PLAY' or self.seqenceState == 'PAUSE':
+            with open(filename, "r+") as file1:
+                # Reading from a file
+                lines = file1.read().split("\n")
+                for line in lines:
+                    line = line.split(";")[0] #ignore comments
+                    if(line != ""):
+                        if(line.find("\n") == -1):
+                            line += "\n"
+                        line = line.split("=")
+                        target = line[0]
+                        arg = line[1]
+                        while self.seqenceState != 'PLAY':
+                            print("waiting for play button")
                             time.sleep(0.1)
-                            
-                        print("button " + arg + " clicked")
-                        self.buttons[arg]=0
-                    else:
-                        result = self.publish(self.client, self.topic+target, arg)
-                        """status = result[0]
-                        if status == 0:
-                            arg = arg.replace("\n","")
-                            print(f"Sent `{arg}` to topic `{topic+target}`")
+                            pass
+                        if target == 'Pause':
+                            print("paused for ", arg.replace("\n",""), "s")
+                            time.sleep(float(arg))
+                        elif target == "WaitForButton":
+                            #reset button state first
+                            arg=str(arg).replace("\n","")
+                            self.buttons[arg]=0
+                            print("wait for button" + arg)
+                            print(self.buttons)
+                            while not self.buttons[arg] or self.seqenceState != "PLAY":
+                                time.sleep(0.1)
+                                
+                            print("button " + arg + " clicked")
+                            self.buttons[arg]=0
                         else:
-                            print(f"Failed to send message to topic {topic+target}")"""
-                else:
-                    print("Empty line")
-        print("EveryThing is sent")
+                            result = self.publish(self.client, self.topic+target, arg)
+                    else:
+                        print("Empty line")
+            print("EveryThing is sent")
+            self.seqenceState = 'OVER'  #force exit
+        print('Sequence has stoped, intentionnally or because it\'s over')

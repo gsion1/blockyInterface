@@ -19,7 +19,6 @@ def pages(name=None):
 
 @app.route('/listFile')
 def listFiles():
-
     string = ""
     for folder in folders:
         files = os.listdir(folder)
@@ -32,6 +31,7 @@ def listFiles():
 def startSequence():
     whichOne = request.args.get('c', '')
     buttons = mqttModule.scanButton(whichOne+".txt")
+    mqttModule.setImportantButton('PLAY',True) #force state change 
     t1 = threading.Thread(target=mqttModule.readFileAndSendCmd, args=(whichOne+".txt",))
     #htmlbuttons = htmlForSequence(buttons)
     t1.start()
@@ -41,14 +41,30 @@ def startSequence():
 @app.route('/button', methods=['GET'])
 def buttonCliked():
     whichOne = request.args.get('b', '')
-    mqttModule.setButton(whichOne)
-    return "Button " + whichOne + " clicked"
+    if mqttModule.setButton(whichOne) :
+        return "Button " + whichOne + " clicked"
+    if mqttModule.seqenceState == "PAUSE":
+        return "Can't set a button while paused, please press 'PLAY' button first"
+    if mqttModule.seqenceState == "OVER":
+        return "You reach the end of the sequence, please restart it to continue"
+    return "Sequence has been stopped by you"
+
+@app.route('/importantButton', methods=['GET'])
+def importantButtonCliked():
+    whichOne = request.args.get('b', '')
+    cmds = ['STOP', 'PLAY', 'PAUSE']
+    res = ["Stopping the sequence ...", "Let's continue our work", "Click play to continue"]
+    if whichOne in cmds:
+        if mqttModule.setImportantButton(whichOne):
+            return res[cmds.index(whichOne)]
+        return "Cannot PLAY after being stopped or if the sequence is over. Restart the sequence first"
+    return "Sorry there is an error, could you retry?" #Should not be here
 
 @app.route('/update')
 def updateRepo(): #maybe not the safest thing, for test purposes
     try:
         subprocess.check_call(['git', 'pull'])
-        return "Updating ... You will have to reboot then. Just give us ten minutes"
+        return "Updating ... You will have to manually reboot then. Just give us ten minutes"
     except subprocess.CalledProcessError:
         return "There is an error. Is the device connected to internet ?"
     

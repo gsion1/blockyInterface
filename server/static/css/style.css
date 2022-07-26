@@ -1,3 +1,7 @@
+body{
+    font-family: monospace;
+}
+
 .fileList{
     margin-top: 0vh;
     margin-left: -2.5%;
@@ -27,10 +31,12 @@
     color: rgb(127, 25, 25);
 }
 
+
 #buttonDiv{
     width:30%;
 }
 
+/* sequence buttons */
 .buttons{
     width: 70px;
     height: 70px;
@@ -41,9 +47,18 @@
     justify-content: center; /* align horizontal */
     align-items: center; /* align vertical */
     margin: 30px;
-    color: black;
+    color: white;
     font-weight: bolder;
+    font-size: larger;
 }
+
+.stopButton{
+    background-color: rgb(219, 36, 36);
+}
+.playButton, .pauseButton{
+    background-color: rgb(21, 177, 16);
+}
+/* end button sequence */
 
 .flex-column{
     display: flex;
