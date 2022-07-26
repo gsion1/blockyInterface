@@ -54,19 +54,22 @@ class mqtt:
     def scanButton(self, filename):
         but = {}
         with open(filename, "r+") as file1:
+            
             # Reading from a file
             lines = file1.read().split("\n")
             for line in lines:
-                line = line.split(";")[0] #ignore comments
-                if(line != ""):
-                    if(line.find("\n") == -1):
-                        line += "\n"
-                    line = line.split("=")
-                    target = line[0]
-                    arg = line[1]
-                    if target == "WaitForButton":
-                        but[str(arg).replace("\n","")] = 0
-
+                try:
+                    line = line.split(";")[0] #ignore comments
+                    if(line != ""):
+                        if(line.find("\n") == -1):
+                            line += "\n"
+                        line = line.split("=")
+                        target = line[0]
+                        arg = line[1]
+                        if target == "WaitForButton":
+                            but[str(arg).replace("\n","")] = 0
+                except:
+                    print("Did not understand " + line[0] + ". Pass")
         self.buttons = but
         return but
 
@@ -82,17 +85,24 @@ class mqtt:
 
     def readFileAndSendCmd(self, filename):
         print(filename)
+        loopforever = False
         while self.seqenceState == 'PLAY' or self.seqenceState == 'PAUSE':
             with open(filename, "r+") as file1:
                 # Reading from a file
                 lines = file1.read().split("\n")
                 for line in lines:
+                    if loopforever:
+                        lines.append(line) #add the line executed at the bottom of the list to do it again and again
+                    
                     line = line.split(";")[0] #ignore comments
                     if(line != ""):
                         if(line.find("\n") == -1):
                             line += "\n"
                         line = line.split("=")
                         target = line[0]
+                        
+                        
+                        
                         arg = line[1]
                         while self.seqenceState != 'PLAY':
                             print("waiting for play button")
@@ -112,8 +122,12 @@ class mqtt:
                                 
                             print("button " + arg + " clicked")
                             self.buttons[arg]=0
+                        elif target == "LOOPFOREVER":
+                            print("Will loop forever")
+                            loopforever = True
                         else:
                             result = self.publish(self.client, self.topic+target, arg)
+                            
                     else:
                         print("Empty line")
             print("EveryThing is sent")
