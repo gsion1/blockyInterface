@@ -74,8 +74,8 @@ class mqtt:
         return but
 
 
-    def publish(self, client, topic, arg):
-        result = client.publish(topic, arg)
+    def publish(self, client, topic, arg, qos=0):
+        result = client.publish(topic, arg, qos=qos)
         status = result[0]
         if status == 0:
             arg = arg.replace("\n","")
@@ -126,7 +126,7 @@ class mqtt:
                             print("Will loop forever")
                             loopforever = True
                         else:
-                            result = self.publish(self.client, self.topic+target, arg, qos=0)
+                            result = self.publish(self.client, self.topic+target, arg, 1)
                             
                     else:
                         print("Empty line")
