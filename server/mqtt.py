@@ -126,7 +126,7 @@ class mqtt:
                             print("Will loop forever")
                             loopforever = True
                         else:
-                            result = self.publish(self.client, self.topic+target, arg, 1)
+                            self.publish(self.client, self.topic+target, arg, 1)
                             
                     else:
                         print("Empty line")
