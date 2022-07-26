@@ -3,11 +3,12 @@ Lineaire-1=$3,0,-1*31
 Rotatif-1=$3,0,-1*31
 Pause=40
 LOOPFOREVER=true
+Rotatif-1=$1,0,900,500,80*5;close valve
+Pause=10
+Lineaire-1=$1,0,240,1000,100,23*42; push liquid
+Pause=22
 Rotatif-1=$1,0,90,500,200*15; open valve
 Pause=10
 Lineaire-1=$1,0,2,500,200*52; blow liquid from tank
 Pause=22
-Rotatif-1=$1,0,0,500,80,23*33;close valve
-Pause=10
-Lineaire-1=$1,0,240,1000,100,23*42; push liquid
-Pause=22
+
