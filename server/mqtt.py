@@ -39,7 +39,6 @@ class mqtt:
 
     def scanButton(self, filename):
         but = {}
-        print(filename)
         with open(filename, "r+") as file1:
             # Reading from a file
             lines = file1.read().split("\n")
@@ -53,6 +52,7 @@ class mqtt:
                     arg = line[1]
                     if target == "WaitForButton":
                         but[str(arg).replace("\n","")] = 0
+
         self.buttons = but
         return but
 
