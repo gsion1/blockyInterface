@@ -8,7 +8,7 @@ function writeCmd_3v(elt){
 }
 
 function writeCmd_actuator(elt, loopValue){
-    line = `$1,${/*elt.getFieldValue('id')*/0},${elt.getFieldValue('pos')},${elt.getFieldValue('speed')},80,23`
+    line = `$1,${/*elt.getFieldValue('id')*/0},${elt.getFieldValue('pos')},${elt.getFieldValue('speed')},${elt.getFieldValue('accel')},23`
     if(loopValue != undefined) {   //if called by a loop block
         line = line.replaceAll("i",loopValue.toString())
     }
