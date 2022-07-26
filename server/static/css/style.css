@@ -95,3 +95,11 @@ body{
     font-weight: bolder;
     padding-top: 10px;
 }
+
+#version-number{
+    color: white;
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    font-size: small;
+}
