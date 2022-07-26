@@ -99,11 +99,11 @@ class mqtt:
                         if(line.find("\n") == -1):
                             line += "\n"
                         line = line.split("=")
-                        target = line[0]
+                        target = line[0].strip()
                         
                         
                         
-                        arg = line[1]
+                        arg = line[1].strip()
                         while self.seqenceState != 'PLAY':
                             print("waiting for play button")
                             time.sleep(0.1)
