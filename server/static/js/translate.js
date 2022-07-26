@@ -131,8 +131,12 @@ function writeLine(elt, loopValue=undefined){
         }
     /******************  WAIT CMDS *********************/
     } else if(["waitS","waitM", "waitH", "waitButton"].includes(elt.type)){
-        line = writeCmd_wait(elt)
+        let cmd = writeCmd_wait(elt)
+        if(cmd == 0)
+            return 0
 
+        line = cmd
+        
     /******************** HOMING ****************/
     } else if(elt.type == 'home') {
         //line = `HOMEALL` //not safe to be implemented yet. Not all actuators should be homed in the same direction

@@ -27,13 +27,20 @@ function writeCmd_home(elt){
 
 function writeCmd_wait(elt){
     if(elt.type == 'waitS')
-        line = `Pause=${elt.getFieldValue('delay')}`
+        line = `Pause=${parseFloat(elt.getFieldValue('delay'))}`
     else if(elt.type == 'waitM')
-        line = `Pause=${elt.getFieldValue('delay')*60}`
+        line = `Pause=${parseFloat(elt.getFieldValue('delay')*60)}`
     else if(elt.type == 'waitH')
-        line = `Pause=${elt.getFieldValue('delay')*3600}`
-    else if(elt.type == 'waitButton')
-        line = `WaitForButton=${elt.getFieldValue('button')}`
+        line = `Pause=${parseFloat(elt.getFieldValue('delay')*3600)}`
+    else if(elt.type == 'waitButton'){
+        let butName = elt.getFieldValue('button').trim()  //a blank can drive you crazy, trust me
+        if(["STOP", "PLAY", "PAUSE"].includes(butName)){
+            showError("ERROR - Don't name a button STOP, PLAY or PAUSE")
+            return 0
+        }
+        line = `WaitForButton=${butName}`
+    }
+        
     return line
 }
 

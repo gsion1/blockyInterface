@@ -100,25 +100,26 @@
             </div>
         </div>
         <br>
-        <!--<div id="err_div"></div>-->
-        <div>
-            <label>Save or load blocks from your device</label><br>
-            <input type="button" onclick="saveBlocks()" value="Save blocks">
-            <input type="file" onchange="loadBlocks(this)" value="Load blocks">
-        </div>
-        <br>
-        <div>
-            <label>Generate and save on the server</label><br>
-            <input type="button" onclick="generateSequenceFromBlocks()" value="Generate code"/>
-            <input type="button" onchange="saveSequenceOnServer()" value="Save seq on server">
-        </div>
-        <br>
-        <div>
-            <label>Import sequence from your device<label><br>
-            <form id="uploadbanner" enctype="multipart/form-data" method="post" action="/saveSeq">
-                <input id="file" name="file" type="file" />
-                <input type="submit" value="submit" id="submit" />
-            </form>
+        <div class="flex-row">
+            <div class="buttonDiv">
+                <label>Save or load blocks from your device</label><br>
+                <input type="button" onclick="saveBlocks()" value="Save blocks">
+                <input type="file" onchange="loadBlocks(this)" value="Load blocks">
+            </div>
+            <br>
+            <div class="buttonDiv">
+                <label>Generate and save on the server</label><br>
+                <input type="button" onclick="generateSequenceFromBlocks()" value="Generate code"/>
+                <input type="button" onchange="saveSequenceOnServer()" value="Save seq on server">
+            </div>
+            <br>
+            <div class="buttonDiv">
+                <label>Import txt sequence from your device<label><br>
+                <form id="uploadbanner" enctype="multipart/form-data" method="post" action="/saveSeq">
+                    <input id="file" name="file" type="file" />
+                    <input type="submit" value="submit" id="submit" />
+                </form>
+            </div>
         </div>
     </div>
    
@@ -134,7 +135,7 @@
         });
 
         let blockList = {}
-        setTimeout(function () {document.getElementById("blocklyPopup").style.maxWidth = "0%", 50});
+        setTimeout(function () {document.getElementById("blocklyPopup").style.maxWidth = "0%", 50}); //fix display issue
         
     </script>
   </body>

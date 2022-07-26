@@ -7,9 +7,11 @@
 function toggleVisibility(idOfTheElement){
     if(document.getElementById(idOfTheElement).style.maxWidth != "100%"){
         document.getElementById(idOfTheElement).style.maxWidth = "100%"
+        document.getElementById(idOfTheElement).style.overflow = "scroll"
         return 1
     }else {
         document.getElementById(idOfTheElement).style.maxWidth = "0%"
+        document.getElementById(idOfTheElement).style.overflow = "hidden"
         return 0
     }
 }
