@@ -1,5 +1,7 @@
 LOOPFOREVER=true
 WaitForButton=1 Litre
-Lineaire-1=$1,0,240,1000,100,23*42
-WaitForButton=1 Litre
-Lineaire-1=$1,0,5,300,100,23*27
+Rotatif-1=$1,0,90,500,200*15 ; open valve
+Lineaire-1=$1,0,2,500,200*52 ; blow liquid from tank
+Rotatif-1=$1,0,0,500,80,23*33 ;close valve
+Lineaire-1=$1,0,240,1000,100,23*42 ; push liquid
+
