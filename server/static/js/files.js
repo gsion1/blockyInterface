@@ -15,16 +15,14 @@ function listFiles(){
             links_examples = ""
             links_yourSeq = ""
             for(f of files){
-                //links += `<a href="/start?c=${f}" target="iframeSequences" onclick="setTimeout(\"clearIframe('iframeSequences')\",4000)">${f}</a><br>`
                 if(f.search("examples/") != -1)
-                    links_examples += `<a href="/start?c=${f}" target="iframeSequences">${f.replace("examples/","")}</a><br>`
+                    links_examples += `<a href="/start?c=${f}" class="sequenceToPlay" target="iframeSequences">${f.replace("examples/","")}</a><br>`
                 if(f.search("your_seq/") != -1)
-                    links_yourSeq += `<div><a href="/start?c=${f}" target="iframeSequences">${f.replace("your_seq/","")}</a><button>Trash</button></div><br>`
+                    links_yourSeq += `<div class="filePlusTrashDiv"><a href="/start?c=${f}" class="sequenceToPlay" target="iframeSequences">${f.replace("your_seq/","")}</a><button class="trashCan" onclick="askToDeleteSeq('${f.replace("your_seq/","")}')"></button></div><br>`
             }
-            //links += '<iframe id="iframeSequences" src="" name="iframeSequences" width="100%" height="100px" frameborder="0"></iframe>'
+            links_yourSeq += "<iframe width='100%' frameBorder='0' height='50' name='iframedelSeq' src=''></iframe>"
             document.getElementById("fileListExamples").innerHTML = links_examples;
             document.getElementById("fileListYourSeq").innerHTML = links_yourSeq;
-            //document.getElementById('placeholder').innerHTML = xhr.responseText;
         }
     }
     xhr.open('GET', 'listFile');
@@ -44,3 +42,22 @@ function saveSequenceOnServer(){
     a.innerHTML = 'download JSON';
     a.click()
 }
+
+/**
+ * Remove a user sequence from the list
+ * @param {string} filename 
+ */
+//todo push response in iframe
+function askToDeleteSeq(filename){
+    console.log(filename) 
+    if(confirm("Would you like to delete " +filename.toString())){
+        const link = document.getElementById('delSeqA');
+        link.href = `/delSeq?s=${filename.toString()}` // Your URL
+        link.target = "iframedelSeq"
+        link.click();
+        console.log("removing seq from server", filename.toString())
+        alert("File removed")
+        setTimeout(listFiles(), 1000) // refresh list
+    }
+}
+    
