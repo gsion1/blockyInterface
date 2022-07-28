@@ -15,8 +15,7 @@ function translateBlocksToTxt(blockList){
             output += "<code>"+line+"</code>";
         } else {
             return 0;
-        }
-        
+        }   
     }
     console.log(output)
     document.getElementById('codeOutput').innerHTML = output
@@ -39,8 +38,6 @@ function writeLine(elt, loopValue=undefined){
     
     /******************  LOOPs and CONDITIONS ******************/
     else if(elt.type == "for"){
-        //console.log("==>", elt.getChildren())  
-        //console.log("==>", elt.getDescendants())
         let children = getChildren(elt)//childBlocks_  // not working
         if(children == 0){
             showError('Please place blocks inside \'Count with\' block')
@@ -56,7 +53,6 @@ function writeLine(elt, loopValue=undefined){
                 for(child of children){
                     console.log("child",child)
                     line += writeLine(child, i)
-
                 }
                 counter ++;
                 if(counter > 2000){ //timeout, maybe an error
@@ -64,7 +60,6 @@ function writeLine(elt, loopValue=undefined){
                     return 0
                 }
             }
-            
         } else {
             for(i = startVal; i > stopVal; i-= Math.abs(inc)){
                 for(child of children){
@@ -79,8 +74,6 @@ function writeLine(elt, loopValue=undefined){
                 }
             } 
         }
-        
-
     }
     else if(elt.type == 'for_simple'){
         let children = getChildren(elt)//childBlocks_  // not working
@@ -98,25 +91,6 @@ function writeLine(elt, loopValue=undefined){
         }
     }
     else if(elt.type == 'atTheSameTime'){
-        /*line = `ATTHESAMETIME l=`
-        let children = elt.childBlocks_
-        if(children.length == 0){
-            showError("\"At the same Time\" block cannot be empty");
-            err = 1;
-        }
-        if( !err ){
-            for(child of children){
-                if((child.type == "actionneur" || child.type == "3Voies") && !err) //not pause in this block, we can't pause while doing anothe thing
-                {   
-                    //console.log("hey", child.type)
-                    line += writeLine(child)
-                }
-                else {
-                    showError("You can only place blocks from move tab in a \"At the same Time\" block")
-                    err = 1;
-                }
-            }
-        }*/
         showError("ERROR - Not yet implemented")
         return 0
         
@@ -131,20 +105,6 @@ function writeLine(elt, loopValue=undefined){
         //be careful, everything after this block won't execute
 
     }  else if(elt.type == 'sync'){
-        /*
-        let children = elt.childBlocks_
-        console.log("elt.childBlocks_",elt.childBlocks_)
-        console.log("elt.",elt)
-        line = `SYNC`
-        for(child of children){
-            if(child.type == "actionneur"){
-                line += writeLine(child)
-            } else {
-                showError("You can only place \"actuator\" blocks in a \"synchronize\" one")
-                return 0
-            }
-            
-        }*/
         showError("ERROR - Not yet implemented")
         return 0
     /******************  WAIT CMDS *********************/
@@ -189,13 +149,9 @@ function getChildren(elt){
         }
         return children
     }
-    
     showError("ERROR - There is at least one empty block")
     return 0
-    
-        
 }
-
 
 function testPurposes(){
     res = ""
@@ -204,7 +160,6 @@ function testPurposes(){
         chk = calcChecksum(str).toString()
         res += `WaitForButton=Savon\nLineaire-1=${str}*${chk}\n`
         
-    }console.log(res)
+    }
+    console.log(res)
 }
-
-
