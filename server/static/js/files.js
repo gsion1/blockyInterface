@@ -19,7 +19,7 @@ function listFiles(){
                 if(f.search("examples/") != -1)
                     links_examples += `<a href="/start?c=${f}" target="iframeSequences">${f.replace("examples/","")}</a><br>`
                 if(f.search("your_seq/") != -1)
-                    links_yourSeq += `<a href="/start?c=${f}" target="iframeSequences">${f.replace("your_seq/","")}</a><br>`
+                    links_yourSeq += `<div><a href="/start?c=${f}" target="iframeSequences">${f.replace("your_seq/","")}</a><button>Trash</button></div><br>`
             }
             //links += '<iframe id="iframeSequences" src="" name="iframeSequences" width="100%" height="100px" frameborder="0"></iframe>'
             document.getElementById("fileListExamples").innerHTML = links_examples;
