@@ -1,4 +1,5 @@
 /***************** At the same time ************/
+//start 2 movements at the same time not implemented yet
 Blockly.defineBlocksWithJsonArray([
   {
     "type": "atTheSameTime",
@@ -15,7 +16,7 @@ Blockly.defineBlocksWithJsonArray([
 ]);
 
 /***************** For loop *************/
- //start 2 movements at the same time
+ //classic for loop with start and stop value, plus increment
  Blockly.defineBlocksWithJsonArray([
     {
       "type": "for",
@@ -56,6 +57,33 @@ Blockly.defineBlocksWithJsonArray([
       "colour": 120
     }
   ]);
+
+  //simplified for loop
+  Blockly.defineBlocksWithJsonArray([
+    {
+      "type": "for_simple",
+      "message0": "Repeat %1 times",
+      
+      "args0": [
+        {
+          "type": "field_number",
+          "name": "stopValue",
+          "value": 10,
+          "min": -1000,
+          "max": 1000,
+          "precision": 0.1
+        }
+      ],
+      "message1": "do %1",
+      "args1": [
+        {"type": "input_statement", "name": "DO"}
+      ],
+      "previousStatement": null,
+      "nextStatement": null,
+      "colour": 120
+    }
+  ]);
+
 
    /*****************  syncronize *************/
  //start the actuators at the same time and for the same amount of time (speeds and accel and distance can be different)

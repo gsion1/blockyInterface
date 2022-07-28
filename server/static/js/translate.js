@@ -42,10 +42,10 @@ function writeLine(elt, loopValue=undefined){
         //console.log("==>", elt.getChildren())  
         //console.log("==>", elt.getDescendants())
         let children = getChildren(elt)//childBlocks_  // not working
-        if(children == 0)
+        if(children == 0){
+            showError('Please place blocks inside \'Count with\' block')
             return 0
-
-        console.log("children",children)
+        }
         startVal = parseFloat(elt.getFieldValue('startValue'))
         stopVal = parseFloat(elt.getFieldValue('stopValue'))
         inc = parseFloat(elt.getFieldValue('increment'))
@@ -82,6 +82,21 @@ function writeLine(elt, loopValue=undefined){
         
 
     }
+    else if(elt.type == 'for_simple'){
+        let children = getChildren(elt)//childBlocks_  // not working
+        if(children == 0){
+            showError('Please place blocks inside \'Repeat\' block')
+            return 0
+        }
+        stopVal = parseFloat(elt.getFieldValue('stopValue'))
+
+        for(let i=0; i< stopVal; i++){
+            for(child of children){
+                console.log("child",child)
+                line += writeLine(child, i)
+            }
+        }
+    }
     else if(elt.type == 'atTheSameTime'){
         /*line = `ATTHESAMETIME l=`
         let children = elt.childBlocks_
@@ -116,6 +131,7 @@ function writeLine(elt, loopValue=undefined){
         //be careful, everything after this block won't execute
 
     }  else if(elt.type == 'sync'){
+        /*
         let children = elt.childBlocks_
         console.log("elt.childBlocks_",elt.childBlocks_)
         console.log("elt.",elt)
@@ -128,7 +144,9 @@ function writeLine(elt, loopValue=undefined){
                 return 0
             }
             
-        }
+        }*/
+        showError("ERROR - Not yet implemented")
+        return 0
     /******************  WAIT CMDS *********************/
     } else if(["waitS","waitM", "waitH", "waitButton"].includes(elt.type)){
         let cmd = writeCmd_wait(elt)
