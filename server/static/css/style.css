@@ -14,7 +14,7 @@ body{
     overflow: scroll;
 }
 
-.fileList a{
+.sequenceToPlay{
     text-decoration: dashed;
     font-size: x-large;
     margin-left: 5%;
@@ -25,6 +25,21 @@ body{
     text-align: center;
     padding: 10px;
     align-items: stretch;
+}
+
+.filePlusTrashDiv{
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.trashCan{
+    background-image: url("/static/img/trashcan.png");
+    width: 10%;
+    border: none;
+    background-color: transparent;
+    height: 50px;
+    margin-top: 10px;;
 }
 
 #err_div{

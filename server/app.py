@@ -82,6 +82,22 @@ def saveSeqFromClient():
         return "Please select a file"
     return "An error has occured"
 
+@app.route('/delSeq', methods=['GET'])
+def delSeq():
+    try:
+        whichOne = str(request.args.get('s', ''))
+        whichOne = whichOne.replace("%20"," ") #get request spaces
+        sensitiveChar = ["..","/","~"] #these char can be harmful if executed with rm command
+        for c in sensitiveChar:
+            whichOne = whichOne.replace(c, "")
+        whichOne = "your_seq/"+whichOne+".txt"
+        os.remove(whichOne)
+        print(whichOne)
+        return "File removed"
+    except:
+        return "There is an issue. Maybe the file is already deleted"
+    
+
 if __name__ == '__main__':
     time.sleep(1)
     app.run()
