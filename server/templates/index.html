@@ -107,8 +107,9 @@
             <br>
             <div class="buttonDiv">
                 <label>Generate and save on the server</label><br>
-                <input type="button" onclick="generateSequenceFromBlocks()" value="Generate code"/>
-                <input type="button" onchange="saveSequenceOnServer()" value="Save seq on server">
+                <input type="button" onclick="generateSequenceFromBlocks()" value="Generate code"/><br>
+                <input type="normal" id="saveSeq_seqName" placeholder="seqName"><br>
+                <input type="button" onclick="generateSequenceFromBlocks(); saveSequenceOnServerAsTxt()" value="Save seq on server">
             </div>
             <br>
             <div class="buttonDiv">

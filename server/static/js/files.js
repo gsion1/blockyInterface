@@ -60,4 +60,23 @@ function askToDeleteSeq(filename){
         setTimeout(listFiles(), 1000) // refresh list
     }
 }
+
+/**
+ * Save sequanec on the derver directly as txt file
+ * @returns 
+ */
+function saveSequenceOnServerAsTxt(){
+    let filename = document.getElementById('saveSeq_seqName').value
+    if (filename == ""){
+        showError("Please specify a filename. Now generate the code again and save it")
+        return 0
+    }
+    let seq = document.getElementById('codeOutput').innerHTML
     
+    var a = document.createElement('a');
+    a.href = `/saveSeq?filename=${filename.toString()}&file=${seq.toString()}`;
+    a.click()
+
+    return 1
+
+}

@@ -70,16 +70,43 @@ def updateRepo(): #maybe not the safest thing, for test purposes
     
 @app.route('/saveSeq', methods=['GET','POST'])
 def saveSeqFromClient():
-    # handle the POST request
-    if request.method == 'POST':
+    #imported from computer
+    if request.method == 'POST':  
         f = request.files['file']
         print(f)
         if f != None:
             if f.endswith(".txt"):
-                f.save("your_seqs/"+werkzeug.utils.secure_filename(f.filename))
+                f.save("your_seq/"+werkzeug.utils.secure_filename(f.filename))
                 return 'Everything is okay ! Redirecting <meta http-equiv="refresh" content="5; URL=/">'
             return "Sorry, .txt only"
         return "Please select a file"
+
+    #generated from blockly
+    if request.method == 'GET':
+        file = request.args.get('file', '')
+        filename = request.args.get('filename', '')
+        sensitiveChar = ["..","/","~"] #these char can be harmful if executed with rm command
+        for c in sensitiveChar:
+            filename = filename.replace(c, "")
+
+        filename = filename.replace("%20", " ") #transformed by get request
+        file = file.replace("%20", " ") 
+
+        if filename == "":
+            filename = "NoName_"+str(random.randint())
+
+        filename = "your_seq/"+filename+".txt"
+        if os.path.exists(filename):
+            print("This file already exists")
+            return "This file already exists, please manually delete it first"
+
+        text_file = open(filename, "w")
+        file = file.replace("<code>","")
+        file = file.replace("</code>","\n")
+        text_file.write(file)
+        text_file.close()
+        return 'Everything is okay ! Redirecting <meta http-equiv="refresh" content="5; URL=/">'
+
     return "An error has occured"
 
 @app.route('/delSeq', methods=['GET'])
@@ -97,6 +124,7 @@ def delSeq():
     except:
         return "There is an issue. Maybe the file is already deleted"
     
+
 
 if __name__ == '__main__':
     time.sleep(1)

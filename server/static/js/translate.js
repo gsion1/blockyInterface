@@ -12,7 +12,7 @@ function translateBlocksToTxt(blockList){
         
         let line = writeLine(elt)
         if(line != 0){
-            output += "<code>"+line+"</code>";
+            output += line;
         } else {
             return 0;
         }   
@@ -149,9 +149,10 @@ function getChildren(elt){
         }
         return children
     }
-    showError("ERROR - There is at least one empty block")
+    showError("There is at least one empty block")
     return 0
 }
+
 
 function testPurposes(){
     res = ""
