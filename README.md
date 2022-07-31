@@ -81,5 +81,17 @@ Add those lines at the end of cron file (`sudo crontab -e`)
 @reboot cd blockyInterface/server &&  python3 -m flask run --host 192.168.8.1
 ```
 
+# USB drive management
+By default, drives won't be mounted automatically and without root or sudo
+To auto mount, install pmount and create udev rule etc
+Follow https://raspberrypi.stackexchange.com/questions/66169/auto-mount-usb-stick-on-plug-in-without-uuid
+First step from pauliucxz and then second and third steps from yy502
+Or you can do 
+```
+sudo chmod +x install/automount.sh
+sudo ./install/automount.sh
+```
+
+
 # Troubleshooting 
-Stop the mobile data on the computer that loads the web page or it will prefer to load from the internet and it won't work
+Stop the mobile data on the computer or mobile phone that loads the web page or it will prefer to load from the internet and it won't work
