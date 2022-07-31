@@ -1,4 +1,4 @@
-from shutil import which
+import shutil
 from flask import Flask, redirect, url_for, render_template, request, flash, send_from_directory
 import os
 import random
@@ -124,7 +124,27 @@ def delSeq():
     except:
         return "There is an issue. Maybe the file is already deleted"
     
-
+#import seq from usb key
+@app.route('/importFromUsb', methods=['GET'])
+def importSeqFromUsb():
+    try:
+        for root, dirs, files in os.walk("/media"):
+            print(dirs)
+            for d in dirs:
+                if d.find("Thingva") != -1:
+                    path = os.path.join(root, d)
+                    print("Thingva found", path)
+                    files=os.listdir(path)
+ 
+                    for fname in files:
+                        shutil.copy2(os.path.join(path,fname),"your_seq/")
+                    return 'Files copied <meta http-equiv="refresh" content="1; URL=/">'
+                
+        return "There is an issue. Did you connect the usb key ?"
+ 
+    except Exception as e:
+        print(e)
+        return "An unknown error occured"
 
 if __name__ == '__main__':
     time.sleep(1)
