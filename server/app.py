@@ -137,8 +137,16 @@ def importSeqFromUsb():
                     files=os.listdir(path)
  
                     for fname in files:
-                        shutil.copy2(os.path.join(path,fname),"your_seq/")
-                    return 'Files copied <meta http-equiv="refresh" content="1; URL=/">'
+                        try:
+                            filepath = os.path.join(path,fname)
+                            newpath = os.path.join("your_seq/",fname)
+                            if not os.path.isfile(newpath):
+                                shutil.copy2(filepath,"your_seq/")
+                            else :
+                                return "Cannot copy "+fname+" because it already exists"
+                        except Exception as ex:
+                            return "Cannot copy "+fname+" for an unknown reason"
+                    return 'Files copied'
                 
         return "There is an issue. Did you connect the usb key ?"
  

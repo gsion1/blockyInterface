@@ -21,6 +21,7 @@ function listFiles(){
                     links_yourSeq += `<div class="filePlusTrashDiv"><a href="/start?c=${f}" class="sequenceToPlay" target="iframeSequences">${f.replace("your_seq/","")}</a><button class="trashCan" onclick="askToDeleteSeq('${f.replace("your_seq/","")}')"></button></div><br>`
             }
             links_yourSeq += "<iframe width='100%' frameBorder='0' height='50' name='iframedelSeq' src=''></iframe>"
+            links_yourSeq += `<a href="/importFromUsb" class="sequenceToPlay" id='buttonImportFromUsb' onclick='setTimeout(() => {listFiles()},"500");' target="iframedelSeq">Import from USB drive</a>`
             document.getElementById("fileListExamples").innerHTML = links_examples;
             document.getElementById("fileListYourSeq").innerHTML = links_yourSeq;
         }
