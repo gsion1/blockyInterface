@@ -1,8 +1,6 @@
 function importSequence(){
     
 }
-
-
 /**
  * Ask the server for sequences stored on it
  */
@@ -51,13 +49,13 @@ function saveSequenceOnServer(){
 //todo push response in iframe
 function askToDeleteSeq(filename){
     console.log(filename) 
-    if(confirm(T["Would you like to delete "] +filename.toString())){
+    if(confirm("Would you like to delete " +filename.toString())){
         const link = document.getElementById('delSeqA');
         link.href = `/delSeq?s=${filename.toString()}` // Your URL
         link.target = "iframedelSeq"
         link.click();
         console.log("removing seq from server", filename.toString())
-        alert(T["File removed"])
+        alert("File removed")
         setTimeout(listFiles(), 1000) // refresh list
     }
 }
@@ -69,7 +67,7 @@ function askToDeleteSeq(filename){
 function saveSequenceOnServerAsTxt(){
     let filename = document.getElementById('saveSeq_seqName').value
     if (filename == ""){
-        showError(T["Please specify a filename. Now generate the code again and save it"])
+        showError("Please specify a filename. Now generate the code again and save it")
         return 0
     }
     let seq = document.getElementById('codeOutput').innerHTML
