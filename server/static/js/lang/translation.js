@@ -85,7 +85,7 @@ function parseCsv() {
             var item = l.split(",")
             L[item[0]] = item[1]
         }
-        //translateReplace(L)  //blocky doesn't work if we replace
+        translateReplace(L)  //blocky doesn't work if we replace
         T=L  //store translations in T
         //console.log(T)
     }
@@ -96,8 +96,8 @@ function translateReplace(L){
     html = document.body.innerHTML;
     head = document.getElementsByTagName("head")[0].innerHTML;
     for(k of Object.keys(L)) {
-        //html = html.replaceAll("T['"+k+"']",L[k])
-        //head = head.replaceAll("T['"+k+"']",L[k])
+        html = html.replaceAll("T{"+k+"}",L[k])
+        head = head.replaceAll("T{"+k+"}",L[k])
     }
     document.body.innerHTML = html;
     document.getElementsByTagName("head")[0].innerHTML = head;
