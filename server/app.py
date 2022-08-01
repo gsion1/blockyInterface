@@ -154,6 +154,12 @@ def importSeqFromUsb():
         print(e)
         return "An unknown error occured"
 
+@app.route('/shutdown', methods=['GET'])
+def shutdown():
+    subprocess.check_call(['shutdown +1'])
+    return "Shuting down in one minute. To restart, plug and unplug the computer" #won't return 
+    
+
 if __name__ == '__main__':
     time.sleep(1)
     app.run()
