@@ -40,7 +40,7 @@ function writeLine(elt, loopValue=undefined){
     else if(elt.type == "for"){
         let children = getChildren(elt)//childBlocks_  // not working
         if(children == 0){
-            showError('Please place blocks inside \'Count with\' block')
+            showError(T['Please place blocks inside Count with block'])
             return 0
         }
         startVal = parseFloat(elt.getFieldValue('startValue'))
@@ -56,7 +56,7 @@ function writeLine(elt, loopValue=undefined){
                 }
                 counter ++;
                 if(counter > 2000){ //timeout, maybe an error
-                    showError("Your for loop is invalid or there is more than 2k iterations")
+                    showError(T["Your for loop is invalid or there is more than 2k iterations"])
                     return 0
                 }
             }
@@ -69,16 +69,16 @@ function writeLine(elt, loopValue=undefined){
                 }
                 counter ++;
                 if(counter > 2000){ //timeout, maybe an error
-                    showError("Your for loop is invalid or there is more than 2k iterations")
+                    showError(T["Your for loop is invalid or there is more than 2k iterations"])
                     return 0
                 }
             } 
         }
     }
     else if(elt.type == 'for_simple'){
-        let children = getChildren(elt)//childBlocks_  // not working
+        let children = getChildren(elt)
         if(children == 0){
-            showError('Please place blocks inside \'Repeat\' block')
+            showError(T['Please place blocks inside Repeat block'])
             return 0
         }
         stopVal = parseFloat(elt.getFieldValue('stopValue'))
@@ -91,11 +91,11 @@ function writeLine(elt, loopValue=undefined){
         }
     }
     else if(elt.type == 'atTheSameTime'){
-        showError("ERROR - Not yet implemented")
+        showError(T["ERROR - Not yet implemented"])
         return 0
         
     } else if(elt.type == 'loopForever'){
-        let children = elt.childBlocks_
+        let children = getChildren(elt)
         //console.log("children",children)
         line = `LOOPFOREVER`
         for(child of children){
@@ -105,7 +105,7 @@ function writeLine(elt, loopValue=undefined){
         //be careful, everything after this block won't execute
 
     }  else if(elt.type == 'sync'){
-        showError("ERROR - Not yet implemented")
+        showError(T["ERROR - Not yet implemented"])
         return 0
     /******************  WAIT CMDS *********************/
     } else if(["waitS","waitM", "waitH", "waitButton"].includes(elt.type)){
@@ -149,7 +149,7 @@ function getChildren(elt){
         }
         return children
     }
-    showError("There is at least one empty block")
+    showError(T["There is at least one empty block"])
     return 0
 }
 

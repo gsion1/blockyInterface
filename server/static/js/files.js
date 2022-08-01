@@ -21,7 +21,7 @@ function listFiles(){
                     links_yourSeq += `<div class="filePlusTrashDiv"><a href="/start?c=${f}" class="sequenceToPlay" target="iframeSequences">${f.replace("your_seq/","")}</a><button class="trashCan" onclick="askToDeleteSeq('${f.replace("your_seq/","")}')"></button></div><br>`
             }
             links_yourSeq += "<iframe width='100%' frameBorder='0' height='50' name='iframedelSeq' src=''></iframe>"
-            links_yourSeq += `<a href="/importFromUsb" class="sequenceToPlay" id='buttonImportFromUsb' onclick='setTimeout(() => {listFiles()},"500");' target="iframedelSeq">Import from USB drive</a>`
+            links_yourSeq += `<a href="/importFromUsb" class="sequenceToPlay" id='buttonImportFromUsb' onclick='setTimeout(() => {listFiles()},"500");' target="iframedelSeq">${T['Import from USB drive']}</a>`
             document.getElementById("fileListExamples").innerHTML = links_examples;
             document.getElementById("fileListYourSeq").innerHTML = links_yourSeq;
         }
@@ -51,13 +51,13 @@ function saveSequenceOnServer(){
 //todo push response in iframe
 function askToDeleteSeq(filename){
     console.log(filename) 
-    if(confirm("Would you like to delete " +filename.toString())){
+    if(confirm(T["Would you like to delete "] +filename.toString())){
         const link = document.getElementById('delSeqA');
         link.href = `/delSeq?s=${filename.toString()}` // Your URL
         link.target = "iframedelSeq"
         link.click();
         console.log("removing seq from server", filename.toString())
-        alert("File removed")
+        alert(T["File removed"])
         setTimeout(listFiles(), 1000) // refresh list
     }
 }
@@ -69,7 +69,7 @@ function askToDeleteSeq(filename){
 function saveSequenceOnServerAsTxt(){
     let filename = document.getElementById('saveSeq_seqName').value
     if (filename == ""){
-        showError("Please specify a filename. Now generate the code again and save it")
+        showError(T["Please specify a filename. Now generate the code again and save it"])
         return 0
     }
     let seq = document.getElementById('codeOutput').innerHTML

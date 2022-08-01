@@ -1,0 +1,24 @@
+Thingva Simple Automation,Thingva Simple Automation
+Control pannel,Panneau de contrôle
+Open editor,Ouvrir l'éditeur
+Close editor,Fermer l'éditeur
+Your sequences,Vos séquences
+Thingva examples,Exemples Thingva
+Click on generate first,Appuyer sur Générer d'abord
+The output code will be shown here,Le code de sortie s'affichera ici
+Save or load blocks from your device,Sauvegarder ou charger une séquence depuis vos appareil
+Generate and save on the server,Générer et sauvegarder sur le serveur
+Import txt sequence from your device,Importer la séquence depuis votre appareil
+Save blocks,Sauvegarder les blocs
+Load blocks,Importer les blocs
+Import from USB drive,Importer depuis un support USB
+File removed,Fichier supprimé
+Generate code,Générer le code
+Save seq on server,Sauver sur le serveur
+seqName,Nom de la séquence
+ERROR - Not yet implemented,ERREUR - Pas encore implémenté
+Please specify a filename. Now generate the code again and save it,Veuillez entrer un nom de fichier
+There is at least one empty block,Un des bloc ne devrait pas être vide
+Please place blocks inside Repeat block,Le bloc Repeat ne peut pas être vide
+Your for loop is invalid or there is more than 2k iterations,Votre boucle For est invalide ou comporte plus de 2000 itérations
+Please place blocks inside Count with block,N'oubliez pas de placer des blocks dans Count with

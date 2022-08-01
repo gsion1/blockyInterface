@@ -39,10 +39,8 @@ Blockly.defineBlocksWithJsonArray([
       }
 
     ],
-    
     "nextStatement": null,
-    
- 
+    "previousStatement": null,
     "colour": 270,
     "tooltip": "First block. Do a homing on specified module"
   }

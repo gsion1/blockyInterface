@@ -15,6 +15,7 @@
     <script src="{{url_for('static', filename = 'js/processBlocks.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/ui.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/writeCmds.js')}}"></script>
+    <script src="{{url_for('static', filename = 'js/lang/translation.js')}}"></script>
     <link rel="icon" href="{{url_for('static', filename = 'img/favicon.ico')}}" />
 
   </head>
@@ -25,20 +26,8 @@
         Thingva Simple Automation
     </div>
     <span id="version-number">0.1.0</span>
-
-    <!--Todo list, hidden by default-->
-    <!--<button onclick="toggleVisibility('todo')">Todo</button>
-
-    <div id="todo" style="display: none;">
-        TODO:<br>
-        - Vérifier que tout soit bien parsé par les fonctions dans blockly.html
-        - Acceder à tous les enfants dans les fonctions avec childBlocks_<br>
-        - Sur les synchro, vérifier que chaque actionneur n'y soit qu'une fois
-        - Mauvaise checksum sur $1,0,100,40,50,23*110 (doit être 28)
-    </div>-->
-
    
-    <!--Show the seqeunces stored on the server-->
+    <!--Show the sequences stored on the server-->
     <div class="flex-row">
         <div class="flex-col" style="width:30%;">  
             <div class="tab ">
@@ -75,9 +64,6 @@
             <block type="waitButton"></block>
         </category>
         <category name="Main" categorystyle="loop_category">
-            <!--<block type="controls_repeat">
-            <!--<value name="TIMES">            </value>
-            </block>-->
             <block type="for_simple"></block>
             <block type="for"></block>
             <!--<block type="atTheSameTime"></block>-->
@@ -101,14 +87,14 @@
         <div class="flex-row">
             <div class="buttonDiv">
                 <label>Save or load blocks from your device</label><br>
-                <input type="button" onclick="saveBlocks()" value="Save blocks" disabled>
-                <input type="file" onchange="loadBlocks(this)" value="Load blocks" disabled>
+                <input type="button" onclick="saveBlocks()" value="T{Save blocks}" disabled>
+                <input type="file" onchange="loadBlocks(this)" value="T{Load blocks}" disabled>
             </div>
             <br>
             <div class="buttonDiv">
                 <label>Generate and save on the server</label><br>
                 <input type="button" onclick="generateSequenceFromBlocks()" value="Generate code"/><br>
-                <input type="normal" id="saveSeq_seqName" placeholder="seqName"><br>
+                <input type="normal" id="saveSeq_seqName" placeholder="eqName"><br>
                 <input type="button" onclick="generateSequenceFromBlocks(); saveSequenceOnServerAsTxt()" value="Save seq on server">
             </div>
             <br>
@@ -125,6 +111,7 @@
     
     
     <script>
+        //translate("index")
         listFiles()//show sequences stored on the server    
         openTabStartUp() //open first tab
         //Show blockly workbench 
