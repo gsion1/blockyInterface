@@ -97,7 +97,7 @@ function writeLine(elt, loopValue=undefined){
     } else if(elt.type == 'loopForever'){
         let children = getChildren(elt)
         //console.log("children",children)
-        line = `LOOPFOREVER`
+        line = `LOOPFOREVER=true`
         for(child of children){
             console.log("child",child)
             line += writeLine(child)
