@@ -58,11 +58,18 @@ body{
 
 .poweroff-container{
     border-radius: 99rem;
-    background-color: brown;
+    background-color: rgb(199, 19, 19);
     color: white;
     position: absolute;
     top: 5px;
-    right: 30px;
+    right: 70px;
+    text-decoration: none;
+    padding: 5px;
+}
+
+a {
+    text-decoration: none;
+    color: aliceblue;
 }
 
 /* sequence buttons */

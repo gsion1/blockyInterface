@@ -158,6 +158,11 @@ def importSeqFromUsb():
 def shutdown():
     subprocess.check_call(['shutdown','+1'])
     return "Shuting down in one minute. To restart, plug and unplug the computer" 
+
+@app.route('/reboot', methods=['GET'])
+def reboot():
+    subprocess.check_call(['shutdown','-r','+1'])
+    return "Rebooting in one minute. Server will be available again quickly" 
     
 
 if __name__ == '__main__':
