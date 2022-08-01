@@ -35,7 +35,7 @@ body{
 
 .trashCan{
     background-image: url("/static/img/trashcan.png");
-    width: 10%;
+    width: 50px;
     border: none;
     background-color: transparent;
     height: 50px;
