@@ -1,3 +1,4 @@
+let continueToLoop = true
 /**
  * 
  * @param {*} blockList 
@@ -6,16 +7,19 @@
 
 function translateBlocksToTxt(blockList){
     output = ""
-
+    continueToLoop = true
     for(k of Object.keys(blockList)){
         elt = Blockly.getMainWorkspace().getBlockById(k)
+        if(continueToLoop){
+            let line = writeLine(elt)
         
-        let line = writeLine(elt)
-        if(line != 0){
-            output += line;
-        } else {
-            return 0;
-        }   
+            if (line != 0){
+                output += line;
+            }     
+            else {
+                return 0;
+            }   
+        }
     }
     console.log(output)
     document.getElementById('codeOutput').innerHTML = output
@@ -103,7 +107,7 @@ function writeLine(elt, loopValue=undefined){
             line += writeLine(child)
         }
         //be careful, everything after this block won't execute
-
+        continueToLoop = false
     }  else if(elt.type == 'sync'){
         showError(T["ERROR - Not yet implemented"])
         return 0
