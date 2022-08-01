@@ -51,6 +51,20 @@ body{
     width:30%;
 }
 
+/* POWER off */
+.poweroff{
+    padding: 5px;
+}
+
+.poweroff-container{
+    border-radius: 99rem;
+    background-color: brown;
+    color: white;
+    position: absolute;
+    top: 5px;
+    right: 30px;
+}
+
 /* sequence buttons */
 .buttons{
     width: 70px;
