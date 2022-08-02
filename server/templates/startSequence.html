@@ -21,6 +21,9 @@
             <a href="/importantButton?b=PAUSE" target="button_state" class="buttons pauseButton" onclick="setTimeout('clearIframe(\'iframeButtonState\')',3000);">PAUSE</a>
             <a href="/importantButton?b=STOP" target="button_state" class="buttons stopButton" onclick="setTimeout('clearIframe(\'iframeButtonState\')',3000);">STOP</a>
         </div>
+        <div>
+            <iframe id="iframeState" src="/state" name="iframeState" width="100%" height="100vh" frameborder="0"></iframe>
+        </div>
     </div>
     <script>
         //clear iframe

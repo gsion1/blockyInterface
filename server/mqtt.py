@@ -14,6 +14,7 @@ class mqtt:
     #password = 'public'
     mqtt_is_connected = 0
     seqenceState = 'STOP'
+    lastCommand = "No command sent"
 
     def __init__(self):
         self.client = self.connect_mqtt()
@@ -91,6 +92,7 @@ class mqtt:
                 # Reading from a file
                 lines = file1.read().split("\n")
                 for line in lines:
+                    self.lastCommand = line
                     if loopforever:
                         lines.append(line) #add the line executed at the bottom of the list to do it again and again
                     
@@ -100,9 +102,7 @@ class mqtt:
                             line += "\n"
                         line = line.split("=")
                         target = line[0].strip()
-                        
-                        
-                        
+
                         arg = line[1].strip()
                         while self.seqenceState != 'PLAY':
                             print("waiting for play button")

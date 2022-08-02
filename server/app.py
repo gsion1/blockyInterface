@@ -60,6 +60,11 @@ def importantButtonCliked():
         return "Cannot PLAY after being stopped or if the sequence is over. Restart the sequence first"
     return "Sorry there is an error, could you retry?" #Should not be here
 
+#show last command played
+@app.route('/state')
+def showState():
+    return "Last command : " + str(mqttModule.lastCommand) + '<meta http-equiv="refresh" content="1; URL=/state">'
+
 @app.route('/update')
 def updateRepo(): #maybe not the safest thing, for test purposes
     try:
