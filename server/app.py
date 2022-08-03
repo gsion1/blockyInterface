@@ -65,6 +65,11 @@ def importantButtonCliked():
 def showState():
     return "Last command : " + str(mqttModule.lastCommand) + '<meta http-equiv="refresh" content="1; URL=/state">'
 
+#show connected devices
+@app.route('/devices')
+def showConnectedDevices():
+    return render_template("devices.html", devices=mqttModule.connectedDevices)
+
 @app.route('/update')
 def updateRepo(): #maybe not the safest thing, for test purposes
     try:

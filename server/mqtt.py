@@ -15,9 +15,12 @@ class mqtt:
     mqtt_is_connected = 0
     seqenceState = 'STOP'
     lastCommand = "No command sent"
+    connectedDevices = []
 
     def __init__(self):
         self.client = self.connect_mqtt()
+        self.client.on_message=self.on_message
+        self.client.subscribe("isConnected")
         self.client.loop_start()
         #self.buttons = {"1":0,"2":0,"3":0,"4":0}
 
@@ -35,6 +38,12 @@ class mqtt:
         client.on_connect = on_connect
         client.connect(self.broker, self.port)
         return client
+
+    def on_message(self, client, userdata, message):
+        if(message.topic == "isConnected"):
+            self.connectedDevices.append(message.payload.decode("utf-8"))
+            self.connectedDevices = list( dict.fromkeys(self.connectedDevices) )#remove duplicate
+        print("received message =",str(message.payload.decode("utf-8")))
 
     #buttons defined by the user
     #won't update the button if paused
@@ -73,7 +82,6 @@ class mqtt:
                     print("Did not understand " + line[0] + ". Pass")
         self.buttons = but
         return but
-
 
     def publish(self, client, topic, arg, qos=0):
         result = client.publish(topic, arg, qos=qos)

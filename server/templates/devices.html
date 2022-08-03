@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Devices</title>
+    <meta http-equiv="refresh" content="15; URL=/devices">
+    <link href="{{url_for('static', filename = 'css/style.css')}}" rel="stylesheet">
+</head>
+<body>
+    <div class="flex-row">
+        {% for dev in devices %}
+            <span class="device">{{dev}}</span>
+        {% endfor %}
+    </div>
+
+    <style>
+
+
+        .device{
+            padding: 8px;
+            margin: 8px;
+            border-radius: 99rem;
+            color: aliceblue;
+            background-color: green;
+        }
+    </style>
+
+</body>
+</html>

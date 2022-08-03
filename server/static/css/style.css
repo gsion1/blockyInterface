@@ -116,6 +116,17 @@ a {
     font-size: x-large;
     margin:10px;
 }
+
+/************* connected devices ********/
+.devicesDiv{
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    width: 70%;
+    height: 10vh;
+}
+
+
 /*************  Topbar ******************/
 #topbar{
     width: 105%;
