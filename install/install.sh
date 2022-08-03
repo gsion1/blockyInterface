@@ -1,3 +1,7 @@
+sudo apt install python3 python3-pip mosquitto mosquitto-clients
+pip3 install -U Flask
+
+
 sudo ./automount.sh #mount usb automatically
 
 #redirect thingva to 198.168.8.1 and reload 
