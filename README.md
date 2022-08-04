@@ -70,6 +70,10 @@ Be carreful, mosquitto can be localhost only by default
 ```
 #edit conf file
 sudo nano /etc/mosquitto/mosquitto.conf
+# add those line to this file 
+listener 1883
+allow_anonymous true
+
 #by default, mosquitto command does not use a conf file, so we should specify it
 sudo mosquitto -v -c /etc/mosquitto/mosquitto.conf
 ```
@@ -95,3 +99,6 @@ sudo ./install/automount.sh
 
 # Troubleshooting 
 Stop the mobile data on the computer or mobile phone that loads the web page or it will prefer to load from the internet and it won't work
+
+## Check if the device tries to connect to Wi-Fi
+`sudo udhcpd -f`
