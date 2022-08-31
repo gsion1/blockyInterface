@@ -9,8 +9,16 @@
 </head>
 <body>
     <div class="flex-row">
-        {% for dev in devices %}
-            <span class="device">{{dev}}</span>
+        {% for device, value in devices.items() %}
+            {% if value['type'] == "actuator" %}
+                <span class="device actuator" title="This is an actuator">{{device}} Pos:{{value['pos']}}</span>
+            {% endif %}
+            {% if value['type'] == "button" %}
+                <span class="device button" title="This is a button">{{device}}</span>
+            {% endif %}
+            {% if value['type'] == "default" %}
+                <span class="device default" title="Undefined Equipment. Not very important">{{device}}</span>
+            {% endif %}
         {% endfor %}
     </div>
 
@@ -22,7 +30,19 @@
             margin: 8px;
             border-radius: 99rem;
             color: aliceblue;
+            
+        }
+
+        .actuator{
             background-color: green;
+        }
+
+        .button{
+            background-color: rgb(17, 57, 143);
+        }
+
+        .default{
+            background-color: rgb(93, 94, 97);
         }
     </style>
 

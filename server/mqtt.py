@@ -15,12 +15,14 @@ class mqtt:
     mqtt_is_connected = 0
     seqenceState = 'STOP'
     lastCommand = "No command sent"
-    connectedDevices = []
+    connectedDevices = {}
 
     def __init__(self):
         self.client = self.connect_mqtt()
         self.client.on_message=self.on_message
         self.client.subscribe("isConnected")
+        self.client.subscribe("button")
+        self.client.subscribe("posFeedback")
         self.client.loop_start()
         #self.buttons = {"1":0,"2":0,"3":0,"4":0}
 
@@ -40,10 +42,26 @@ class mqtt:
         return client
 
     def on_message(self, client, userdata, message):
-        if(message.topic == "isConnected"):
-            self.connectedDevices.append(message.payload.decode("utf-8"))
-            self.connectedDevices = list( dict.fromkeys(self.connectedDevices) )#remove duplicate
         print("received message =",str(message.payload.decode("utf-8")))
+        if(message.topic == "isConnected"):
+            dev = message.payload.decode("utf-8").split("=")
+            if(len(dev) < 2):
+                dev.append("default")
+            self.connectedDevices[dev[0]] = {"type":dev[1], "pos":"X"}
+            #if(data not in self.connectedDevices):
+            #    self.connectedDevices.append(data)
+            #self.connectedDevices = list( dict.fromkeys(self.connectedDevices) )#remove duplicate
+            print("New device: ", self.connectedDevices)
+        if(message.topic == "button"):
+            button = message.payload.decode("utf-8").split("=") #button name, counter
+            self.setButton(button[0])
+        if(message.topic == "posFeedback"):  #actuatorName,Position
+            dev = message.payload.decode("utf-8").split("=")
+            if(len(dev) < 2):
+                dev.append("X")
+            self.connectedDevices[dev[0]]['pos']=dev[1]
+
+        
 
     #buttons defined by the user
     #won't update the button if paused
