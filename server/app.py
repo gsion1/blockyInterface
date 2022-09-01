@@ -31,6 +31,8 @@ def listFiles():
 def startSequence():
     whichOne = request.args.get('c', '')
     buttons = mqttModule.scanButton(whichOne+".txt")
+    mqttModule.setImportantButton('STOP',True)#force to quit last seq
+    time.sleep(1)
     mqttModule.setImportantButton('PLAY',True) #force state change 
     t1 = threading.Thread(target=mqttModule.readFileAndSendCmd, args=(whichOne+".txt",))
     #htmlbuttons = htmlForSequence(buttons)
