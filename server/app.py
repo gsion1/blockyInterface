@@ -3,10 +3,13 @@ from flask import Flask, redirect, url_for, render_template, request, flash, sen
 import os
 import random
 import time
+
+from matplotlib.font_manager import json_dump
 from mqtt import *
 import threading
 import werkzeug
 import subprocess
+import json
 
 app = Flask(__name__)
 mqttModule = mqtt()
@@ -56,6 +59,10 @@ def importantButtonCliked():
     whichOne = request.args.get('b', '')
     cmds = ['STOP', 'PLAY', 'PAUSE']
     res = ["Stopping the sequence ...", "Let's continue our work", "Click play to continue"]
+    if whichOne == 'STOP':
+        mqttModule.lastCommand = "Sequence stopped"
+    elif whichOne == 'PAUSE':
+        mqttModule.lastCommand = "Press PLAY to resume"
     if whichOne in cmds:
         if mqttModule.setImportantButton(whichOne):
             return res[cmds.index(whichOne)]
@@ -63,14 +70,26 @@ def importantButtonCliked():
     return "Sorry there is an error, could you retry?" #Should not be here
 
 #show last command played
-@app.route('/state')
-def showState():
-    return "Last command : " + str(mqttModule.lastCommand) + '<meta http-equiv="refresh" content="1; URL=/state">'
+#@app.route('/state')
+#def showState():
+#    return "Last command : " + str(mqttModule.lastCommand) + '<meta http-equiv="refresh" content="1; URL=/state">'
+
+#show connected devices
+@app.route('/lastCmd', methods=["POST"])
+def showLastCmd():
+    return str(mqttModule.lastCommand)
 
 #show connected devices
 @app.route('/devices')
 def showConnectedDevices():
     return render_template("devices.html", devices=mqttModule.connectedDevices)
+
+#show connected devices
+@app.route('/devices2', methods=["POST"])
+def showConnectedDevices2():
+    dev = json.dumps(mqttModule.connectedDevices)
+    print(dev)
+    return dev
 
 @app.route('/update')
 def updateRepo(): #maybe not the safest thing, for test purposes

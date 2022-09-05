@@ -47,6 +47,7 @@ class mqtt:
             dev = message.payload.decode("utf-8").split("=")
             if(len(dev) < 2):
                 dev.append("default")
+            dev[1] = dev[1].replace('\n',"")
             self.connectedDevices[dev[0]] = {"type":dev[1], "pos":"X"}
             #if(data not in self.connectedDevices):
             #    self.connectedDevices.append(data)

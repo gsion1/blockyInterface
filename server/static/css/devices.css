@@ -1,0 +1,19 @@
+.devices{
+    padding: 8px;
+    margin: 8px;
+    border-radius: 99rem;
+    color: aliceblue;
+    
+}
+
+.actuator{
+    background-color: green;
+}
+
+.button{
+    background-color: rgb(17, 57, 143);
+}
+
+.default{
+    background-color: rgb(93, 94, 97);
+}
