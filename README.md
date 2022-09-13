@@ -102,3 +102,9 @@ Stop the mobile data on the computer or mobile phone that loads the web page or 
 
 ## Check if the device tries to connect to Wi-Fi
 `sudo udhcpd -f`
+
+# Matlab or Octave usage
+
+For octave please install octave-mqtt and c library of paho-mqtt
+Then use example.m to start sending commands to your actuators
+
