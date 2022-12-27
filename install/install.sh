@@ -1,7 +1,6 @@
 sudo apt update 
-sudo apt install udhcpd hostapd python3 python3-pip mosquitto mosquitto-clients python3-matplotlib python3-paho-mqtt
-pip3 install -U Flask
-pip3 install -r ../requirements.txt
+sudo apt install udhcpd hostapd python3 python3-pip mosquitto mosquitto-clients python3-matplotlib python3-paho-mqtt python3-flask
+#pip3 install -r ../requirements.txt
 
 #Update mosquitto conf to allow access to from other devices
 #sudo sh -c "echo listener 1883 >> /etc/mosquitto/mosquitto.conf"
@@ -15,8 +14,8 @@ sudo cp mosquitto.conf /etc/mosquitto/mosquitto.conf
 #cd install/
 
 #config files
-sudo cp hostapd.conf /etc/hostapd/hostapd.conf
-sudo cp udhcpd.conf /etc/udhcpd.conf
+#sudo cp hostapd.conf /etc/hostapd/hostapd.conf
+#sudo cp udhcpd.conf /etc/udhcpd.conf
 
 #Add to cron 
 (crontab -l ; echo "@reboot export FLASK_APP=app && cd ~/blockyInterface/server && python3 -m flask run --host 192.168.8.1")| crontab - >
