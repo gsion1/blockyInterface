@@ -1,5 +1,8 @@
 # blockyInterface
 
+Be carreful, wifi driver on orangepizero can be terrible 
+alternative way to  create wifi ap : `nmtui` 
+
 ## Setup
 create a directory `your_seq` in server
 
