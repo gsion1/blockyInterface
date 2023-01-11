@@ -33,8 +33,7 @@ body{
     justify-content: space-between;
 }
 
-.trashCan{
-    background-image: url("/static/img/trashcan.png");
+.trashCan, .editBut, .viewBut{
     width: 50px;
     border: none;
     background-color: transparent;
@@ -43,14 +42,16 @@ body{
     cursor: pointer;
 }
 
+.trashCan{
+    background-image: url("/static/img/trashcan.png");
+}
+
 .editBut{
     background-image: url("/static/img/edit.png");
-    width: 50px;
-    border: none;
-    background-color: transparent;
-    height: 50px;
-    margin-top: 10px;
-    cursor: pointer;
+}
+
+.viewBut{
+    background-image: url("/static/img/eye.png");
 }
 
 #err_div{
@@ -214,7 +215,7 @@ a {
     height: 105vh;
     width: 105%;
     position: absolute;
-    top: 5vh;
+    top: 6vh;
     left: 0;
     background-color: rgba(250, 235, 215, 0.1);
     backdrop-filter: blur(4px);

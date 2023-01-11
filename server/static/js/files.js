@@ -14,7 +14,9 @@ function listFiles(){
             links_yourSeq = ""
             for(f of files){
                 if(f.search("examples/") != -1)
-                    links_examples += `<a href="/start?c=${f}" class="sequenceToPlay" target="iframeSequences" onclick='enableFocus=1;'>${f.replace("examples/","")}</a><br>`
+                    links_examples += `<div class="filePlusTrashDiv"><a href="/start?c=${f}" class="sequenceToPlay" target="iframeSequences" onclick='enableFocus=1;'>${f.replace("examples/","")}</a>
+                    <button class="viewBut" onclick="editSeq('examples','${f.replace("examples/","")}')"></button>
+                    </div><br>`
                 if(f.search("your_seq/") != -1)
                     links_yourSeq += `<div class="filePlusTrashDiv"><a href="/start?c=${f}" class="sequenceToPlay" target="iframeSequences" onclick='enableFocus=1;'>${f.replace("your_seq/","")}</a>
                     <button class="trashCan" onclick="askToDeleteSeq('${f.replace("your_seq/","")}')"></button>
