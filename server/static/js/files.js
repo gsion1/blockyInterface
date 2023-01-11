@@ -29,7 +29,7 @@ function listFiles(){
 }
 
 /**
- * Save the sequence on server as txt file, not blocks
+ * Save the sequence on your device as txt file, not blocks
  */
 function saveSequenceOnServer(){
     var json = Blockly.serialization.workspaces.save(Blockly.getMainWorkspace());

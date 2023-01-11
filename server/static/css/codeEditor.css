@@ -1,0 +1,15 @@
+#textEditorDiv{
+    position: absolute;
+    left: 15%;
+    top: 10vh;
+    width: 70%;
+    height: 70vh;
+}
+
+#textEditor{
+    width: 100%;
+    height: 70vh;
+    background-color: rgb(85, 86, 92);
+    color: aliceblue;
+    border-radius: 4px;
+}

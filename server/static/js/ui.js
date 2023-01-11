@@ -50,3 +50,18 @@ function openTab(evt, tabName) {
         document.getElementsByClassName('tablinks')[tab].click() //open tab
     }
 }
+
+/**
+ * toggle visibility of elements
+ * @param {*} state display 1 hide 0
+ * @param {array} elts array of ids to toggle
+ */
+function toggleFocus(state,elts){
+    for(e of elts){
+        if(state == 0)
+            document.getElementById(e).style.display = "none";
+        if(state == 1)
+            document.getElementById(e).style.display = "block";
+        
+    }
+}

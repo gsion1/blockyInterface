@@ -1,12 +1,10 @@
+/* Trinity spinner - Abraham samma*/
 #popupAction {
     position: absolute;
-    top: 50%;
+    top: 80%;
     left: 60%;
     transform: translate(-50%,-50%);
     display: none;
-  }
-  
-  #popupAction {
     width: 200px;
     height: 200px;
   }

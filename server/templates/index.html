@@ -8,6 +8,8 @@
     <link href="{{url_for('static', filename = 'css/tabs.css')}}" rel="stylesheet">
     <link href="{{url_for('static', filename = 'css/devices.css')}}" rel="stylesheet">
     <link href="{{url_for('static', filename = 'css/loading.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename = 'css/focusedButton.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename = 'css/codeEditor.css')}}" rel="stylesheet">
 
     <script src="{{url_for('static', filename = 'js/blockly.min.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/updateFromServer.js')}}"></script>
@@ -128,11 +130,28 @@
         </svg>
         <span id="countdown">1</span>
     </div>
+
+    <div id="fuzzy"></div>
+    <div id="focusButtonDiv" class="focusedButton">
+            <span class="closeButton" onclick="toggleFocus(0,['fuzzy','focusButtonDiv'])">x</span>
+            <a id="focusBut" class="focusedBut" target="button_state" onclick="setTimeout(toggleFocus(0,['fuzzy','focusButtonDiv']),500);"></a> 
+            <iframe id="iframeButtonState" src="" name="button_state" width="1px" height="1px" frameborder="0"></iframe>
+    </div>
+
+    <div id="textEditorDiv">
+        <span class="closeButton" onclick="toggleFocus(0,['fuzzy','textEditorDiv'])">x</span>
+        <textarea id="textEditor">hey</textarea> 
+        <div class="flex-row">
+            <button class="greenButton" onclick="">Save</button>
+            <button class="redButton" onclick="">Cancel</button>
+        </div>
+    </div>
    
     
     
     <script>
-        
+        let lastPause = -1; //do not refresh countdown
+
         listFiles()//show sequences stored on the server    
         openTabStartUp() //open first tab
         //Show blockly workbench 
