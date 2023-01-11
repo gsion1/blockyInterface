@@ -105,7 +105,7 @@
                 <label>Generate and save on the server</label><br>
                 <input type="button" onclick="generateSequenceFromBlocks()" value="Generate code"/><br>
                 <input type="normal" id="saveSeq_seqName" placeholder="eqName"><br>
-                <input type="button" onclick="generateSequenceFromBlocks(); saveSequenceOnServerAsTxt()" value="Save seq on server">
+                <input type="button" onclick="generateSequenceFromBlocks(); saveSequenceFromBlocksAsTxt()" value="Save seq on server">
             </div>
             <br>
             <div class="buttonDiv">
@@ -133,6 +133,8 @@
 
     <div id="fuzzy"></div>
     <div id="focusButtonDiv" class="focusedButton">
+            <a href="/importantButton?b=STOP" id="stopButtonFocus" class="redButton">FORCE STOP</a>
+            <span id="disableFocus" class="grayButton" onclick="enableFocus=0;toggleFocus(0,['fuzzy','focusButtonDiv'])">Disable this screen</span>
             <span class="closeButton" onclick="toggleFocus(0,['fuzzy','focusButtonDiv'])">x</span>
             <a id="focusBut" class="focusedBut" target="button_state" onclick="setTimeout(toggleFocus(0,['fuzzy','focusButtonDiv']),500);"></a> 
             <iframe id="iframeButtonState" src="" name="button_state" width="1px" height="1px" frameborder="0"></iframe>
@@ -140,10 +142,11 @@
 
     <div id="textEditorDiv">
         <span class="closeButton" onclick="toggleFocus(0,['fuzzy','textEditorDiv'])">x</span>
-        <textarea id="textEditor">hey</textarea> 
+        <input id="textEditorFilename"/>
+        <textarea id="textEditor"></textarea> 
         <div class="flex-row">
-            <button class="greenButton" onclick="">Save</button>
-            <button class="redButton" onclick="">Cancel</button>
+            <button class="greenButton" onclick="saveEditedSeq()">Save</button>
+            <button class="redButton" onclick="toggleFocus(0,['fuzzy','textEditorDiv'])">Cancel</button>
         </div>
     </div>
    
@@ -151,7 +154,7 @@
     
     <script>
         let lastPause = -1; //do not refresh countdown
-
+        let enableFocus = 1; 
         listFiles()//show sequences stored on the server    
         openTabStartUp() //open first tab
         //Show blockly workbench 

@@ -21,20 +21,30 @@ body{
     margin-top: 10px;
     background-color: rgb(79, 106, 228);
     color: white;
-    width: 90%;
+    width: 80%;
     text-align: center;
     padding: 10px;
     align-items: stretch;
 }
 
 .filePlusTrashDiv{
-    width: 80%;
+    width: 90%;
     display: flex;
     justify-content: space-between;
 }
 
 .trashCan{
     background-image: url("/static/img/trashcan.png");
+    width: 50px;
+    border: none;
+    background-color: transparent;
+    height: 50px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.editBut{
+    background-image: url("/static/img/edit.png");
     width: 50px;
     border: none;
     background-color: transparent;
@@ -189,16 +199,25 @@ a {
     padding: 8px;
 }
 
+.grayButton{
+    border: 0px;
+    margin: 7px;
+    color: aliceblue;
+    background-color: rgb(54, 55, 71);
+    border-radius: 99em;
+    padding: 8px;
+}
+
 #fuzzy{
     max-width: 105%;
     max-height: 105vh;
     height: 105vh;
     width: 105%;
     position: absolute;
-    top: 0;
+    top: 5vh;
     left: 0;
     background-color: rgba(250, 235, 215, 0.1);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
-    
+    display: none;
 }

@@ -36,6 +36,7 @@ function arrangeDevices(data){
 function humanReadableLastCmd(cmd){
     //to be completed
     if(cmd.search("=$") != -1){ //movement command, should not be displayed for a long time
+        lastPause = -1;
         let data = cmd.split("=")
         let params = data[1].split(",")
         return `${data[0]} is reaching position ${params[2]} with speed ${params[3]}`
@@ -57,10 +58,12 @@ function humanReadableLastCmd(cmd){
         return `Paused for ${h<0? h.toString()+"hours ":""} ${m<0? m.toString()+"minutes  and":""} ${s} sec`
     }
     if(cmd.search("WaitForButton") != -1){ //wait for button command
+        lastPause = -1;
         let data = cmd.split("=")
 
         //show a big button in the center of the display
-        toggleFocus(1,['fuzzy','focusButtonDiv'])
+        if(enableFocus)
+            toggleFocus(1,['fuzzy','focusButtonDiv'])
         document.getElementById("focusBut").href=`/button?b=${data[1]}`;
         document.getElementById("focusBut").innerHTML=`${data[1]}`;
 

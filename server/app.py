@@ -30,6 +30,25 @@ def listFiles():
             string += str(folder) + file.replace(".txt","")+","
     return string
 
+@app.route('/readFile', methods=['GET'])
+def readFile():
+    filename = request.args.get('f', '').replace("/","") #avoid moving between directories
+    dir = request.args.get('d', '').replace("/","") 
+    print(dir, filename)
+
+    if(dir != "your_seq" and dir != "examples"):
+        return str(dir)+"@Access to this directory is denied"
+
+    path = dir+"/"+filename+".txt"
+    if(os.path.exists(path)):
+        file = open(path)
+        content = file.read()
+        file.close()
+    else:
+        return str(path)+"@File not found."
+
+    return filename+"@"+content
+
 @app.route('/start', methods=['GET'])
 def startSequence():
     whichOne = request.args.get('c', '')
@@ -37,6 +56,7 @@ def startSequence():
     mqttModule.setImportantButton('STOP',True)#force to quit last seq
     time.sleep(1)
     mqttModule.setImportantButton('PLAY',True) #force state change 
+    time.sleep(1)
     t1 = threading.Thread(target=mqttModule.readFileAndSendCmd, args=(whichOne+".txt",))
     #htmlbuttons = htmlForSequence(buttons)
     t1.start()
@@ -112,7 +132,7 @@ def saveSeqFromClient():
             return "Sorry, .txt only"
         return "Please select a file"
 
-    #generated from blockly
+    #generated from blockly or with textEditor ui
     if request.method == 'GET':
         file = request.args.get('file', '')
         filename = request.args.get('filename', '')
@@ -121,22 +141,24 @@ def saveSeqFromClient():
             filename = filename.replace(c, "")
 
         filename = filename.replace("%20", " ") #transformed by get request
-        file = file.replace("%20", " ") 
+        file = file.replace("%20", " ")
 
         if filename == "":
             filename = "NoName_"+str(random.randint())
 
         filename = "your_seq/"+filename+".txt"
-        if os.path.exists(filename):
+        forceOverwrite = int(request.args.get('force', ''))
+        if os.path.exists(filename) and not forceOverwrite :
             print("This file already exists")
             return "This file already exists, please manually delete it first"
 
         text_file = open(filename, "w")
         file = file.replace("<code>","")
-        file = file.replace("</code>","\n")
+        file = file.replace("</code>","\n") #for blockly
+        file = file.replace("</br>","\n") #for textEditor, correspond to </br>
         text_file.write(file)
         text_file.close()
-        return 'Everything is okay ! Redirecting <meta http-equiv="refresh" content="5; URL=/">'
+        return 'Everything is okay ! Redirecting <meta http-equiv="refresh" content="3; URL=/">'
 
     return "An error has occured"
 

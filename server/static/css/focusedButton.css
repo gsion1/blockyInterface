@@ -24,3 +24,16 @@
     font-weight: bolder;
     padding: 50px;
 }
+
+#stopButtonFocus{
+    position: absolute;
+    top: -25vh;
+    right: -100%;
+    font-weight: bolder;
+}
+
+#disableFocus{
+    position: absolute;
+    bottom: -25vh;
+    right: -100%;
+}

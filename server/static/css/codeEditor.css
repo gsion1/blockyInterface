@@ -4,6 +4,7 @@
     top: 10vh;
     width: 70%;
     height: 70vh;
+    display: none;
 }
 
 #textEditor{
@@ -12,4 +13,12 @@
     background-color: rgb(85, 86, 92);
     color: aliceblue;
     border-radius: 4px;
+}
+
+#textEditorFilename{
+    background-color: rgb(85, 86, 92);
+    color: aliceblue;
+    border-radius: 2px;
+    padding: 5px;
+    margin: 5px;
 }
