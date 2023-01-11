@@ -7,6 +7,7 @@
     <link href="{{url_for('static', filename = 'css/blocklyPopup.css')}}" rel="stylesheet">
     <link href="{{url_for('static', filename = 'css/tabs.css')}}" rel="stylesheet">
     <link href="{{url_for('static', filename = 'css/devices.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename = 'css/loading.css')}}" rel="stylesheet">
 
     <script src="{{url_for('static', filename = 'js/blockly.min.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/updateFromServer.js')}}"></script>
@@ -114,6 +115,19 @@
             </div>
         </div>
     </div>
+
+    <div id="popupAction">
+        <svg viewBox="0 0 100 100">
+            <defs>
+            <filter id="shadow">
+                <feDropShadow dx="0" dy="0" stdDeviation="1.5" 
+                flood-color="rgb(50, 80, 200)"/>
+            </filter>
+            </defs>
+            <circle id="spinner" style="fill:transparent;stroke:rgb(79, 106, 228);stroke-width: 7px;stroke-linecap: round;filter:url(#shadow);" cx="50" cy="50" r="45"/>
+        </svg>
+        <span id="countdown">1</span>
+    </div>
    
     
     
@@ -134,6 +148,9 @@
         //from updateFromServer
         setInterval(updateLastCmd,800)
         setInterval(updateDevices,5000)
+
+        let countdown = 10;
+        setInterval(decreaseCountdown, 1000);
     </script>
 
     

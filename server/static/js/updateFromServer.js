@@ -40,21 +40,36 @@ function humanReadableLastCmd(cmd){
         let params = data[1].split(",")
         return `${data[0]} is reaching position ${params[2]} with speed ${params[3]}`
     }
-    if(cmd.search("Pause") != -1){ //movement command
+    if(cmd.search("Pause") != -1){ //pause command
         let data = cmd.split("=")
         let t = data[1] // time in sec
         let s = t%60;
         let h = t / 3600;
         let m = (t - h*3600)/60;
-    
+        countdown = t; // in sec
+        document.getElementById("popupAction").style.display = "block"
+
         return `Paused for ${h<0? h.toString()+"hours ":""} ${m<0? m.toString()+"minutes ":""} and ${s} sec`
     }
-    if(cmd.search("WaitForButton") != -1){ //movement command
+    if(cmd.search("WaitForButton") != -1){ //wait for button command
         let data = cmd.split("=")
         return `Please press button ${data[1]}`
     }
     return cmd
 }
+
+function decreaseCountdown(){
+    if(countdown > 1) 
+        countdown -= 1;
+    else 
+        document.getElementById("popupAction").style.display = "none"
+
+    let s = countdown%60;
+    let h = countdown / 3600;
+    let m = (countdown - h*3600)/60;
+    document.getElementById("countdown").innerHTML = `${h<0? h.toString()+"h ":""} ${m<0? m.toString()+"m":""} ${s}s`;
+}
+
 //fetch the last commands from the server
 function updateLastCmd(){
     const request = new XMLHttpRequest();
