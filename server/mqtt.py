@@ -132,9 +132,10 @@ class mqtt:
 
                         arg = line[1].strip()
                         while self.seqenceState != 'PLAY':
-                            print("waiting for play button")
+                            print("waiting for play button. Current state = ",self.seqenceState)
                             time.sleep(0.1)
-                            pass
+                            if(self.seqenceState == "STOP"):
+                                return #exit thread
                         if target == 'Pause':
                             print("paused for ", arg.replace("\n",""), "s")
                             time.sleep(float(arg))
