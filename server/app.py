@@ -147,6 +147,7 @@ def saveSeqFromClient():
             filename = "NoName_"+str(random.randint())
 
         filename = "your_seq/"+filename+".txt"
+        print("################",request.args.get('force', ''))
         forceOverwrite = int(request.args.get('force', ''))
         if os.path.exists(filename) and not forceOverwrite :
             print("This file already exists")

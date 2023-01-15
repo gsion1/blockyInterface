@@ -57,6 +57,13 @@ function saveEditedSeq(){
     }
     let seq = document.getElementById('textEditor').value.replace(/\n\r?/g, '</br>');;
     console.log("-->",seq)
+    if(seq.search("#") != -1){
+        document.getElementById('textEditorError').innerHTML = 'Unsupported "#" character';
+        setTimeout(function(){
+            document.getElementById('textEditorError').innerHTML = '';
+        },5000);
+        return 0
+    }   
     saveSequenceOnServerAsTxt(filename, seq,1); //force overwrite
 }
 
@@ -110,6 +117,6 @@ function saveSequenceFromBlocksAsTxt(){
 
 function saveSequenceOnServerAsTxt(filename, content, forceOverwrite){
     var a = document.createElement('a');
-    a.href = `/saveSeq?filename=${filename.toString()}&file=${content.toString()}&force=${forceOverwrite}`;
+    a.href = `/saveSeq?filename=${filename.toString()}&force=${forceOverwrite}&file=${content.toString()}`;
     a.click()
 }
