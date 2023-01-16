@@ -194,7 +194,7 @@ def importSeqFromUsb():
                         try:
                             filepath = os.path.join(path,fname)
                             newpath = os.path.join("your_seq/",fname)
-                            if not os.path.isfile(newpath) and newpath[0] != ".": #filter temp files created by some editors
+                            if not os.path.isfile(newpath) and fname[0] != ".": #filter temp files created by some editors
                                 shutil.copy2(filepath,"your_seq/")
                             else :
                                 return "Cannot copy "+fname+" because it already exists"
