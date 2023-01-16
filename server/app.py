@@ -181,6 +181,7 @@ def delSeq():
 #import seq from usb key
 @app.route('/importFromUsb', methods=['GET'])
 def importSeqFromUsb():
+    notCopied = ""
     try:
         for root, dirs, files in os.walk("/media"):
             print(dirs)
@@ -197,10 +198,15 @@ def importSeqFromUsb():
                             if not os.path.isfile(newpath) and fname[0] != ".": #filter temp files created by some editors
                                 shutil.copy2(filepath,"your_seq/")
                             else :
-                                return "Cannot copy "+fname+" because it already exists"
+                                #return "Cannot copy "+fname+" because it already exists"
+                                print("Cannot copy "+fname+" because it already exists")
+                                notCopied += " " + fname
                         except Exception as ex:
                             return "Cannot copy "+fname+" for an unknown reason"
-                    return 'Files copied'
+                    if(notCopied==""):
+                        return 'Files copied'
+                    else:
+                        return "All files copied except " + notCopied
                 
         return "There is an issue. Did you connect the usb key ?"
  
