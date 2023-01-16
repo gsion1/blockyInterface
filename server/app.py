@@ -147,7 +147,7 @@ def saveSeqFromClient():
             filename = "NoName_"+str(random.randint())
 
         filename = "your_seq/"+filename+".txt"
-        print("################",request.args.get('force', ''))
+
         forceOverwrite = int(request.args.get('force', ''))
         if os.path.exists(filename) and not forceOverwrite :
             print("This file already exists")
@@ -194,7 +194,7 @@ def importSeqFromUsb():
                         try:
                             filepath = os.path.join(path,fname)
                             newpath = os.path.join("your_seq/",fname)
-                            if not os.path.isfile(newpath):
+                            if not os.path.isfile(newpath) and newpath[0] != ".": #filter temp files created by some editors
                                 shutil.copy2(filepath,"your_seq/")
                             else :
                                 return "Cannot copy "+fname+" because it already exists"
