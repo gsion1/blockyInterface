@@ -86,17 +86,7 @@ Add those lines at the end of cron file (`sudo crontab -e`)
 ```
 @reboot mosquitto -v -c /etc/mosquitto/mosquitto.conf
 @reboot cd blockyInterface/server &&  python3 -m flask run --host 192.168.8.1
-```
-
-# USB drive management
-By default, drives won't be mounted automatically and without root or sudo
-To auto mount, install pmount and create udev rule etc
-Follow https://raspberrypi.stackexchange.com/questions/66169/auto-mount-usb-stick-on-plug-in-without-uuid
-First step from pauliucxz and then second and third steps from yy502
-Or you can do 
-```
-sudo chmod +x install/automount.sh
-sudo ./install/automount.sh
+@reboot udiskie
 ```
 
 

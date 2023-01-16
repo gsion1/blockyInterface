@@ -1,7 +1,6 @@
 sudo apt update 
 sudo apt -y upgrade
-sudo apt install git dnsmasq hostapd python3 python3-pip mosquitto mosquitto-clients python3-matplotlib python3-paho-mqtt python3-flask
-#pip3 install -r ../requirements.txt
+sudo apt install git dnsmasq hostapd python3 python3-pip mosquitto mosquitto-clients python3-matplotlib python3-paho-mqtt python3-flask udiskie
 
 cd install
 #Update mosquitto conf to allow access to from other devices
@@ -13,11 +12,8 @@ cd blockyInterface && mkdir server/your_seq
 
 #Add to cron 
 (crontab -l ; echo "@reboot export FLASK_APP=app && cd ~/blockyInterface/server && python3 -m flask run --host 192.168.8.1")| crontab - >
-#sudo (crontab -l ; echo "@reboot mosquitto -v -c /etc/mosquitto/mosquitto.conf")| crontab - #this one is sudo
+(crontab -l ; echo "@reboot udiskie")| crontab - >
 
-
-# not needed for rpi
-#sudo ./automount_usb.sh #mount usb automatically
  
 #redirect port 80 to 5000
 sudo iptables -t nat -A OUTPUT -o lo -p tcp --dport 80 -j REDIRECT --to-port 5000
