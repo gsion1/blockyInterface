@@ -132,10 +132,13 @@ a {
 /************* connected devices ********/
 .devicesDiv{
     position: fixed;
-    bottom: 0px;
+    bottom: 30px;
     right: 0px;
     width: 70%;
     height: 10vh;
+    display: flex;
+    flex-wrap: wrap;
+    overflow-y: scroll;
 }
 
 
