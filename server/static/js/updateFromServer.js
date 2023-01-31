@@ -15,13 +15,19 @@ function arrangeDevices(data){
     console.log(dev, data)
     stringDev = ""
     for (const key in dev){
-        //if(obj.hasOwnProperty(key)){
           console.log(`${key} -----> ${dev[key]}`)
-          if(dev[key]['type'].search("actuator") != -1)
-            stringDev += `<span class="devices actuator" title="This is an actuator">${key} Pos : ${dev[key]['pos']}</span>`
+          if(dev[key]['type'].search("actuator") != -1){
+            stringDev += `<span class="devices actuator" title="This is an actuator">${key}`
+
+            if(dev[key]['pos'] != "X")  //position if not defined yet
+                stringDev += `<span style="color:gray"> Pos: ${dev[key]['pos']}</span>`
+
+            stringDev +=`</span>`
+
+          }
+            
           else 
             stringDev += `<span class="devices button" title="This is a button">${key}</span>`
-        //}
       }
     lastDev = document.getElementById('devicesDiv')
     if(lastDev != stringDev){

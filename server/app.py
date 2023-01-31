@@ -51,7 +51,7 @@ def readFile():
 
 @app.route('/start', methods=['GET'])
 def startSequence():
-    whichOne = request.args.get('c', '')
+    whichOne = request.args.get('c', '') #name of the sequence
     buttons = mqttModule.scanButton(whichOne+".txt")
     mqttModule.setImportantButton('STOP',True)#force to quit last seq
     time.sleep(1)
@@ -60,7 +60,8 @@ def startSequence():
     t1 = threading.Thread(target=mqttModule.readFileAndSendCmd, args=(whichOne+".txt",))
     #htmlbuttons = htmlForSequence(buttons)
     t1.start()
-    return render_template("startSequence.html", buttons=buttons)
+    seqName = whichOne.split("/")[-1]
+    return render_template("startSequence.html", buttons=buttons, seqName=seqName)
     #return "Sequence "+ whichOne + " started<br>" + htmlbuttons
 
 @app.route('/button', methods=['GET'])

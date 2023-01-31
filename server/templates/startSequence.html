@@ -8,6 +8,7 @@
 </head>
 <body>
     <div class="flex-column">
+        <h3>Current program: {{seqName}}</h3>
         <div class="flex-row">
             {% for but in buttons %}
                 <a href="/button?b={{but}}" target="button_state" class="buttons" onclick="setTimeout('clearIframe(\'iframeButtonState\')',3000);">{{but}}</a>

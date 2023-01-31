@@ -43,19 +43,23 @@ class mqtt:
 
     def on_message(self, client, userdata, message):
         print("received message =",str(message.payload.decode("utf-8")))
+
+        #when they connects and periodically, device send their names on isConnected topic. save and display 
+        #for example : Linear-1=actuator or NameOfTheButton=button
         if(message.topic == "isConnected"):
             dev = message.payload.decode("utf-8").split("=")
             if(len(dev) < 2):
                 dev.append("default")
             dev[1] = dev[1].replace('\n',"")
             self.connectedDevices[dev[0]] = {"type":dev[1], "pos":"X"}
-            #if(data not in self.connectedDevices):
-            #    self.connectedDevices.append(data)
-            #self.connectedDevices = list( dict.fromkeys(self.connectedDevices) )#remove duplicate
             print("New device: ", self.connectedDevices)
+
+        #if a physical button is clicked 
         if(message.topic == "button"):
             button = message.payload.decode("utf-8").split("=") #button name, counter
             self.setButton(button[0])
+
+        #actuators often send their position. Not in real time
         if(message.topic == "posFeedback"):  #actuatorName,Position
             dev = message.payload.decode("utf-8").split("=")
             if(len(dev) < 2):
