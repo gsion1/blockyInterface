@@ -1,0 +1,8 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <block type="actuator" id=":,GB7M!{SSQW*JFeCy8o" x="208" y="171">
+    <field name="mqtt">Lineaire-1</field>
+    <field name="pos">20</field>
+    <field name="speed">500</field>
+    <field name="accel">200</field>
+  </block>
+</xml>

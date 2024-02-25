@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.png' %}"/>
+
+    <title>{% block title %}Dashboard{% endblock %}</title>
+    <!--<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/blocklyPopup.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/codeEditor.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/devices.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/focusedButton.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/loading.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/tabs.css' %}">-->
+</head>
+
+<body>
+    <iframe src="simple_scheduler/" style="display: none;"></iframe>
+    <div id="wrapper" class="flex-col">
+        <!--TopBar-->
+        <div id="topbar" class="flex-row">
+            <input type="button" id="openCloseBlockly" onclick="toogleBlockly()" value="✎ Open editor">
+            <h3>Thingva Simple Automation</h3>
+            <div class="flex-col">
+                <!--<span class="poweroff-container"><a class="poweroff" href="shutdown/">
+                    Power off</a>|<a href="/reboot"> Reboot</a></span>-->
+                <span id="version-number">2.0.0</span>
+            </div>
+        </div>
+
+        <div id="middle-section" class="flex-row">
+            <div id="sidebar-container">
+                {% block side %}{% include 'components/sidebar.html' %}{% endblock side %}
+            </div>
+            <div id="blockly-container">
+                {% block content %}{% include 'components/main.html' %}{% endblock content %}
+                {% block blockly %}{% include 'components/blockly.html' %}{% endblock blockly %}
+            </div>
+
+        </div>
+
+        <div id="devices-container">
+            {% block devices %}{% include 'components/devices.html' %}{% endblock devices %}
+        </div>
+    </div>
+
+</body>
+
+<style>
+    * { 
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .flex-row {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .flex-col {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #topbar {
+        padding: 10px;
+        width: 100%;
+        height: 7vh;
+        background-color: rgb(49, 49, 64);
+        color: white;
+        font-family: monospace;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #middle-section {
+        width: 100%;
+    }
+
+    #sidebar-container {
+        width: 20%;
+        height: 85vh;
+        background-color: rgb(186, 186, 198);
+    }
+
+    #blockly-container {
+        width: 80%;
+        height: 85vh;
+    }
+
+    #devices-container {
+        height: 7vh;
+        width: 100%;
+        background-color: rgb(209, 210, 211);
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    #openCloseBlockly {
+        margin-left: 20px;
+        background-color: #152db5;
+        color: white;
+        font-family: monospace;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+    }
+</style>
+
+</html>

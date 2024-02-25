@@ -1,0 +1,203 @@
+<div class="tab">
+    <button class="tablinks sb-active" id="btn_tab_yourSeq" onclick="openTab('tab_yourSeq')">Your sequences</button>
+    <button class="tablinks" id="btn_tab_ThingvaEx"  onclick="openTab('tab_ThingvaEx')">Thingva examples</button>
+</div>
+
+<div id="tab_yourSeq" class="tabcontent">
+    <div class="fileList flex-col" id="fileListYourSeq">
+
+    </div>
+</div>
+
+<div id="tab_ThingvaEx" class="tabcontent">
+    <div class="fileList flex-col" id="fileListExamples"></div>
+</div>
+
+<style>
+    
+    .tabcontent {
+        height: max-content;
+        width: 100%;
+    }
+
+    .tab {
+        width: 100%;
+        display: flex; 
+        flex-direction: row;
+    }
+
+    .tablinks {
+        background-color: rgb(219, 219, 228);
+        width: 50%;
+        font-family: monospace;
+        font-weight: bold;
+        padding: 20px;
+        border: none;
+        cursor: pointer;
+        border-left: 1px solid gray;
+        border-right: 1px solid gray;
+    }
+
+    .tablinks:hover, .file:hover {
+        background-color: #152db5;
+        color: white;
+    }
+
+    .sb-active {
+        border-bottom: 3px solid rgb(3, 3, 165);
+    }
+
+    .file {
+        width: 200px;
+        height: 50px;
+        background-color: rgb(3, 3, 165);
+        color: white;
+        font-family: monospace;
+        border: none;
+        cursor: pointer;
+        margin: 5px
+    }
+
+    .icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+</style>
+
+<script>
+    function openTab(id) {
+        //make active tab colored
+        document.getElementById("btn_tab_yourSeq").classList.remove("sb-active");
+        document.getElementById("btn_tab_ThingvaEx").classList.remove("sb-active");
+        document.getElementById("btn_"+id).classList.add("sb-active");
+
+        //display tab
+        document.getElementById('tab_yourSeq').style.display = 'none';
+        document.getElementById('tab_ThingvaEx').style.display = 'none';
+        document.getElementById(id).style.display = 'block';
+    }
+
+    openTab("tab_yourSeq")
+
+    function getFileList() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var files = JSON.parse(this.responseText);
+                
+                files["examples"].forEach(element => {
+                    var elt = document.createElement("div");
+                    elt.innerHTML = `<button class="file" onclick="start_file('examples', '${element}')">${element}</button>`;
+                    elt.innerHTML += `<button class="icon" onclick="load_file('examples', '${element}', true)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M11 10H9v3H6v2h3v3h2v-3h3v-2h-3z"></path><path d="M4 22h12c1.103 0 2-.897 2-2V8c0-1.103-.897-2-2-2H4c-1.103 0-2 .897-2 2v12c0 1.103.897 2 2 2zM4 8h12l.002 12H4V8z"></path><path d="M20 2H8v2h12v12h2V4c0-1.103-.897-2-2-2z"></path></svg></button>`;
+                    
+                    //elt.onclick = function() {start_file("examples", element)}
+                    elt.classList.add("flex-row");
+                    document.getElementById("fileListExamples").appendChild(elt);
+                });
+
+                files["custom"].forEach(element => {
+                    var elt = document.createElement("div");
+                    elt.innerHTML = `<button class="file" onclick="start_file('custom', '${element}')">${element}</button>`;
+                    elt.innerHTML += `<button class="icon" onclick="load_file('custom', '${element}')"><svg width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="m16 2.012 3 3L16.713 7.3l-3-3zM4 14v3h3l8.299-8.287-3-3zm0 6h16v2H4z"></path></svg></button>`;
+                    elt.innerHTML += `<button class="icon" onclick="del_file('${element}')"><svg width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M6 7H5v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7H6zm4 12H8v-9h2v9zm6 0h-2v-9h2v9zm.618-15L15 2H9L7.382 4H3v2h18V4z"></path></svg></button>`;
+                    //elt.innerHTML = element;
+                    //elt.onclick = function() {start_file("custom", element)}
+                    elt.classList.add("flex-row");
+                    document.getElementById("fileListYourSeq").appendChild(elt);
+                });
+
+
+                if(files["custom"].length == 0) {
+                    document.getElementById("fileListYourSeq").innerHTML = "No sequences yet";
+                }
+
+                //"Import from USB" button
+                var elt = document.createElement("button");
+                    elt.innerHTML = "Import from USB";
+                    elt.classList.add("file");
+                    elt.onclick = function() {usb()}
+                    document.getElementById("fileListYourSeq").appendChild(elt);
+
+            }
+        };
+        xhttp.open("GET", "fileList/", true);
+        xhttp.send();
+    }
+
+    function start_file(dir, fileName) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                //var data = JSON.parse(this.responseText);
+                err = is_error(this.responseText);
+            }
+        };
+        xhttp.open("GET", "start_file/" + dir + "/" + fileName + "/", true);
+        xhttp.send();
+    }
+
+    function load_file(dir, fileName, skipConfirm = false) {
+        var confirmed = true;
+        if (!skipConfirm) {
+            confirmed = confirm("Are you sure you want to overwrite this sequence?");
+        } 
+        if(confirmed) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    getFileList()
+                    if(!is_error(this.responseText)) {
+                        var data = JSON.parse(this.responseText);
+                        openBlockly();
+                        document.getElementById("blockly-filename").value = data["filename"].replace(".txt", "");
+                        loadBlocks(data["json"]) //restore blockly
+                        document.getElementById("text-editor-textarea").value = data["content"];
+                        //document.getElementById("edit-div").style.transform = "translateX(0)";
+                    }
+                }
+            };
+            xhttp.open("GET", "load_file/" + dir + "/" + fileName + "/", true);
+            xhttp.send();
+        }
+    }
+
+    function del_file(fileName) {
+        var confirmed = confirm("Are you sure you want to delete this sequence?");
+        if(confirmed) {
+    
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    location.reload();
+                    if(!is_error(this.responseText)) {
+                        //var data = JSON.parse(this.responseText);
+                        
+                    }
+                }
+            };
+            xhttp.open("GET", "del_file/" + fileName + "/", true);
+            xhttp.send();
+        }
+    }
+
+    function usb() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                //var data = JSON.parse(this.responseText);
+                err = is_error(this.responseText);
+            }
+        };
+        xhttp.open("GET", "usb/", true);
+        xhttp.send();
+    }
+
+
+    setTimeout(getFileList, 1000);
+</script>

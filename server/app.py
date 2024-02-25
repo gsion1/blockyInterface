@@ -4,7 +4,7 @@ import os
 import random
 import time
 
-from matplotlib.font_manager import json_dump
+#from matplotlib.font_manager import json_dump
 from mqtt import *
 import threading
 import werkzeug

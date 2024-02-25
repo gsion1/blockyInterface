@@ -1,0 +1,199 @@
+
+{% load static %}
+
+
+<script src="{% static 'js/blockly.min.js' %}"></script>
+<script src="{% static 'js/updateFromServer.js' %}"></script>
+<script src="{% static 'js/blocks/blocksMove.js' %}"></script>
+<script src="{% static 'js/blocks/blocksWait.js' %}"></script>
+<script src="{% static 'js/blocks/blocksLoopsAndLogic.js' %}"></script>
+<script src="{% static 'js/translate.js' %}"></script>
+<script src="{% static 'js/processBlocks.js' %}"></script>
+<script src="{% static 'js/writeCmds.js' %}"></script>
+
+
+{% block blockly_blocks %}{% include 'components/blockly_blocks.html' %}{% endblock blockly_blocks%}
+
+<div id="blockly-div" class="blockly-div flex-row">
+    <div class="graphic-editor" class="flex-col">
+        <div id="blocklyDiv" style="height: 75vh; width: 100%;"></div>
+        <div class="flex-row" style="width: 100%; justify-content: space-around; margin-top: 15px;">
+            <input type="button" id="parse-blockly" onclick="parseBlockly()" value="Generate from blocks" />
+            <div id="blockly-error" style="color: red;"></div>
+        </div>
+    </div>
+    <form class="text-editor-div flex-col" action="save_file/" method="post">
+        {% csrf_token %}
+        <input type="text" id="blockly-filename" name="filename" placeholder="File name">
+        <!--<div class="flex-row" id="codeDiv">
+            <div class="flex-col" id="lineNbs"></div>-->
+            <textarea name="code" id="text-editor-textarea" onchange="document.getElementById('blockly-json').value = ''"></textarea>
+        <!--</div>-->
+            <textarea name="json" id="blockly-json" style="display: block" col="30" rows="10"></textarea>
+                
+        <div class="flex-row" style="width: 100%; justify-content: space-around;">
+            <input type="submit" id="save-seq" value="Save" />
+        </div>
+
+    </form>
+    
+</div>
+
+
+<script>
+
+        Blockly.inject('blocklyDiv', {
+            toolbox: document.getElementById('toolbox'),
+            scrollbars: false
+        });
+
+        let blockList = {}
+
+    function toogleBlockly() {
+        if(document.getElementById("blockly-div").style.width == "80%") {
+            closeBlockly();
+        } else {
+            openBlockly();
+        }
+    }
+
+    function openBlockly() {
+        document.getElementById("blockly-div").style.width = "80%";
+        document.getElementById("openCloseBlockly").value = "✖ Close editor";
+    }
+
+    function closeBlockly() {
+        document.getElementById("blockly-div").style.width = "0";
+        document.getElementById("openCloseBlockly").value = "✎ Open editor";
+    }
+
+    function lineNbs(){
+        var ln = "";
+        for (let index = 0; index < 200; index++) {
+            ln += "<div>" + index + "</div>";
+        }
+        document.getElementById("lineNbs").innerHTML = ln;
+    }
+
+    lineNbs();
+
+    function sendSingleCommand() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                //var data = JSON.parse(this.responseText);
+                //err = is_error(this.responseText);
+                document.getElementById("move-command-status").innerHTML = this.responseText;
+            }
+                
+        };
+        xhttp.open("GET", "mqttCmd/" + document.getElementById("move-command").value + "/", true);
+        xhttp.send();
+    }
+
+</script>
+   
+<style>
+    .blockly-div {
+      height: 85vh;
+      width: 0;
+      position: fixed;
+      z-index: 1;
+      top: 7vh;
+      left: 20%;
+      background-color: #e0dada;
+      overflow-x: hidden;
+      transition: 0.5s;
+      border: 3px solid #f1f1f1;
+    }
+    
+    .blockly-div a {
+      padding: 8px 8px 8px 32px;
+      text-decoration: none;
+      font-size: 25px;
+      color: #818181;
+      display: block;
+      transition: 0.3s;
+    
+    }
+    
+    .blockly-div a:hover{
+      color: #f1f1f1;
+    }
+    
+    .blockly-div .closebtn {
+      position: absolute;
+      top: 7vh;
+      right: 25px;
+      font-size: 36px;
+      margin-left: 50px;
+    }
+    
+    @media screen and (max-height: 450px) {
+      .blockly-div {padding-top: 15px;}
+      .blockly-div a {font-size: 18px;}
+    }
+    
+    .graphic-editor {
+        height: 100%;
+        width: 70%;
+    }
+    
+    .text-editor-div {
+        height: 100%;
+        width: 30%;
+        background-color: #818181;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    #text-editor-textarea {
+        width: 100%;
+        height: 60%;
+        background-color: #818181;
+        color: white;
+        cursor: text;
+        font-size: 15px;
+        overflow-y: scroll;
+        
+    }
+    
+    #blockly-filename {
+        width: 150px;
+        padding: 10px;
+    }
+    
+    #save-seq {
+        padding: 10px;
+        width: fit-content;
+        background-color: #15b522;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin: 20px;
+    }
+
+    #parse-blockly {
+        padding: 10px;
+        width: fit-content;
+        background-color: #152db5;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    #codeDiv {
+        width: 100%;
+        font-size: 15px;
+        text-align: start;
+        overflow-y: scroll;
+    }
+    
+    #lineNbs {
+        width: 35px;
+        background-color: #bbbcc5;
+        color: #818181;
+        align-items: start;
+    }
+        
+</style>

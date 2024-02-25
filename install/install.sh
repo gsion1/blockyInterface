@@ -6,6 +6,8 @@ cd install
 #Update mosquitto conf to allow access to from other devices
 sudo cp mosquitto.conf /etc/mosquitto/mosquitto.conf
 
+
+
 #cd ~ && git clone https://github.com/gsion1/blockyInterface.git
 cd blockyInterface && mkdir server/your_seq
 

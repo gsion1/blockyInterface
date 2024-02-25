@@ -1,0 +1,55 @@
+<div id="deviceList" class="flex-row">
+    
+</div>
+
+<style>
+    .actuator {
+        background-color: rgb(23, 23, 142);
+        color: white;
+    }
+
+    .button {
+        background-color: greenyellow;
+    }
+
+    .device {
+        border-radius: 999em;
+        padding: 3px;
+        padding-left: 15px;
+        padding-right: 15px;
+        margin: 5px;
+    }
+</style>
+
+<script>
+    last_devices_msg = null
+    function getFileList() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                if(last_devices_msg == this.responseText)
+                    return; //no change
+                last_devices_msg = this.responseText
+                var devices = JSON.parse(this.responseText);
+                document.getElementById("deviceList").innerHTML = "";
+                
+                Object.keys(devices).forEach(function(key) {
+                    console.log(key, devices[key]);
+                    var elt = document.createElement("span");
+                    elt.innerHTML = key;
+                    elt.classList.add(devices[key]["type"]);
+                    if(devices[key]["type"] == "actuator"){
+                        elt.innerHTML += " (" + devices[key]["pos"] + ")";
+                    }
+                    elt.classList.add("device");
+                    document.getElementById("deviceList").appendChild(elt);
+                });
+                
+            }
+        };
+        xhttp.open("GET", "devices/", true);
+        xhttp.send();
+    }
+
+    setInterval(getFileList, 1000);
+</script>

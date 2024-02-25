@@ -1,0 +1,157 @@
+{% load static %}
+
+    <a id="delSeqA" class="hidden"></a> <!--used to remove seq-->
+
+    <div id = "devicesDiv" class="devicesDiv"><!--<iframe src="/devices" width="100%" height="100vh" frameborder="0px" name="iframeDevices"></iframe>--></div>
+    <!--Show the sequences stored on the server-->
+    <div class="flex-row">
+        <div class="flex-col" style="width:30%;">  
+            <div class="tab ">
+                <button class="tablinks" onclick="openTab(event, 'tab_yourSeq')">Your sequences</button>
+                <button class="tablinks" onclick="openTab(event, 'tab_ThingvaEx')">Thingva examples</button>
+            </div>
+            <div id="tab_yourSeq" class="tabcontent">
+                <div class="fileList" id="fileListYourSeq"></div>
+            </div>
+            
+            <div id="tab_ThingvaEx" class="tabcontent">
+                <div class="fileList" id="fileListExamples"></div>
+            </div>
+                
+        </div>
+        <div style="width:70%" >
+
+            <h3 class="title">Control panel</h3>
+            <iframe id="iframeSequences" src="" name="iframeSequences" width="100%" height="700vh" frameborder="0"></iframe>
+            <div id = "lastCmd">No command sent yet</div>
+        </div>
+    </div>
+
+    
+
+    <!--Blockly toolbox -->
+    <xml id="toolbox" style="display:none">
+        <category name="Move" categorystyle="logic_category">
+            <block type="3Voies"></block>
+            <block type="actuator"></block>
+        </category>
+        <category name="Wait" categorystyle="text_category">
+            <block type="waitS"></block>
+            <block type="waitM"></block>
+            <block type="waitH"></block>
+            <block type="waitButton"></block>
+        </category>
+        <category name="Main" categorystyle="loop_category">
+            <block type="for_simple"></block>
+            <block type="for"></block>
+            <!--<block type="atTheSameTime"></block>-->
+            <block type="loopForever"></block>
+            <!--<block type="sync"></block>-->
+            <!--<block type="home"></block>--> <!--ambiguous : which direction (+ or -), which topic ? Not safe enougth-->
+            <block type="homeOne"></block>
+        </category>   
+    </xml>
+
+    <input type="button" id="openCloseBlockly" onclick="toggleEditor()" value="✎ Open editor">
+    <!-- Not displayed by default, blockly editor-->
+    <div id="blocklyPopup" class="flex-col blurred">
+        <div class="flex-row">
+            <div id="blocklyDiv" style="height: 480px; width: 70%;"></div>
+            <div id="codeDiv">
+                <pre id="codeOutput" class="code"><code>Click on generate first</code><code>The output code will be shown here</code></pre>
+            </div>
+        </div>
+        <br>
+        <div class="flex-row">
+            <div class="buttonDiv">
+                <label>Save or load blocks from your device</label><br>
+                <input type="button" onclick="saveBlocks()" value="Save blocks" disabled>
+                <input type="file" onchange="loadBlocks(this)" value="Load blocks" disabled>
+            </div>
+            <br>
+            <div class="buttonDiv">
+                <label>Generate and save on the server</label><br>
+                <input type="button" onclick="generateSequenceFromBlocks()" value="Generate code"/><br>
+                <input type="normal" id="saveSeq_seqName" placeholder="eqName"><br>
+                <input type="button" onclick="generateSequenceFromBlocks(); saveSequenceFromBlocksAsTxt()" value="Save seq on server">
+            </div>
+            <br>
+            <div class="buttonDiv">
+                <label>Import txt sequence from your device<label><br>
+                <form id="uploadbanner" enctype="multipart/form-data" method="post" action="/saveSeq">
+                    <input id="file" name="file" type="file" />
+                    <input type="submit" value="submit" id="submit" />
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="popupAction">
+        <svg viewBox="0 0 100 100">
+            <defs>
+            <filter id="shadow">
+                <feDropShadow dx="0" dy="0" stdDeviation="1.5" 
+                flood-color="rgb(50, 80, 200)"/>
+            </filter>
+            </defs>
+            <circle id="spinner" style="fill:transparent;stroke:rgb(79, 106, 228);stroke-width: 7px;stroke-linecap: round;filter:url(#shadow);" cx="50" cy="50" r="45"/>
+        </svg>
+        <span id="countdown">1</span>
+    </div>
+
+    <div id="fuzzy"></div>
+    <div id="focusButtonDiv" class="focusedButton">
+            <a href="/importantButton?b=STOP" id="stopButtonFocus" class="redButton">FORCE STOP</a>
+            <span id="disableFocus" class="grayButton" onclick="enableFocus=0;toggleFocus(0,['fuzzy','focusButtonDiv'])">Disable this screen</span>
+            <span class="closeButton" onclick="toggleFocus(0,['fuzzy','focusButtonDiv'])">x</span>
+            <a id="focusBut" class="focusedBut" target="button_state" onclick="setTimeout(toggleFocus(0,['fuzzy','focusButtonDiv']),500);"></a> 
+            <iframe id="iframeButtonState" src="" name="button_state" width="1px" height="1px" frameborder="0"></iframe>
+    </div>
+
+    <div id="textEditorDiv">
+        <span class="closeButton" onclick="toggleFocus(0,['fuzzy','textEditorDiv'])">x</span>
+        <input id="textEditorFilename"/>
+        <textarea id="textEditor"></textarea> 
+        <span id="textEditorError"></span>
+        <div class="flex-row">
+            <button class="greenButton" onclick="saveEditedSeq()">Save</button>
+            <button class="redButton" onclick="toggleFocus(0,['fuzzy','textEditorDiv'])">Cancel</button>
+            <div style="margin-left: 25%;" class="flex-col">
+                <label>Quick checksum calculator</label>
+                <div class="flex-row">
+                    <input type="text" placeholder="$3,0,-1" onchange="document.getElementById('textEditorChksum').innerHTML='*'+calcChecksum(this.value.replace('$','')).toString()" onkeypress = "this.onchange();">
+                    <span id="textEditorChksum">*31</span>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    
+    
+    <script>
+        let lastPause = -1; //do not refresh countdown
+        let enableFocus = 1; 
+        listFiles()//show sequences stored on the server    
+        openTabStartUp() //open first tab
+        //Show blockly workbench 
+        Blockly.inject('blocklyDiv', {
+            toolbox: document.getElementById('toolbox'),
+            scrollbars: false
+        });
+
+        let blockList = {}
+        setTimeout(function () {document.getElementById("blocklyPopup").style.maxWidth = "0%", 50}); //fix display issue
+        //setTimeout(function(){language("index")},500);
+        
+        //from updateFromServer
+        setInterval(updateLastCmd,800)
+        setInterval(updateDevices,5000)
+
+        let countdown = 10;
+        setInterval(decreaseCountdown, 1000);
+    </script>
+
+    
+  </body>
+
+</html>

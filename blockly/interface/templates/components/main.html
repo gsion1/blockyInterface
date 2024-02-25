@@ -1,0 +1,147 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/loading.css' %}">
+
+<div class="flex-col seq-container">
+    <div class="flex-row header">
+        <div class="flex-row"><div id="currentState"></div> :<div id="currentFile"></div></div>
+        <div id="inInfiniteLoop"></div>
+    </div>
+    <h4 id="err-div" style="color: red;"></h4>
+    <h4 id="user-msg"></h4>
+    <div class="flex-row">
+        <button class="actionButton green" onclick="click_important_button('play')">Run</button>
+        <button class="actionButton green" onclick="click_important_button('pause')">Pause</button>
+        <button class="actionButton stop" onclick="click_important_button('stop')">Stop</button>
+    </div>
+    <div class="flex-row" id="waiting-for-time-div">
+        <div class="lds-hourglass"></div>
+        <h4 id="waiting-for-time-val" style="font-size: xx-large;"></h4>
+    </div>
+    <div class="flex-row" id="waiting-for-button-div">
+        
+    </div>
+    <div>
+        <div>Current command: <div id="currentCmd"></div></div>
+        
+    </div>
+
+</div>
+
+<style>
+    .seq-container {
+        margin: 20px;
+        width: 60%;
+        box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+        padding: 15px;
+    }
+    .header {
+        color: rgb(44, 44, 188);
+        border-bottom: 6px solid rgb(44, 44, 188);
+        padding: 5px;
+        justify-content: space-around;
+        font-family: monospace;
+        font-size: 20px;
+        padding: 7px;
+    }
+    .actionButton {
+        width: 100px;
+        height: 100px;
+        border-radius: 99em;
+        box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+        margin: 20px;
+    }
+
+    .stop {
+        background-color: red;
+        color: white;
+    }
+
+</style>
+
+<script>
+    function get_server_state() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var data = JSON.parse(this.responseText);
+                console.log(data)
+                document.getElementById("currentState").innerText = data["currentState"];
+                document.getElementById("currentFile").innerText = data["currentFile"];
+                document.getElementById("currentCmd").innerText = data["currentCmd"];
+                document.getElementById("currentCmd").title = data["lastCmds"];
+                document.getElementById("user-msg").innerText = data["msg"];
+
+                var rem_pause = parseInt(data["waitingForTime"])
+                if(rem_pause > 1)
+                {
+                    document.getElementById("waiting-for-time-val").innerText = rem_pause;
+                    document.getElementById("waiting-for-time-div").style.display = "block";
+                }
+                else {
+                    document.getElementById("waiting-for-time-div").style.display = "none";
+                }
+
+                if(data["waitingForBtn"] != "")
+                {
+                    var btn = `<button class="actionButton blue" onclick="click_user_button('${data["waitingForBtn"]}')">${data["waitingForBtn"]}</button>`
+                    document.getElementById("waiting-for-button-div").innerHTML = btn;
+                    document.getElementById("waiting-for-button-div").style.display = "block";
+                }
+                else {
+                    document.getElementById("waiting-for-button-div").style.display = "none";
+                }
+                    
+                if(data["inInfiniteLoop"] != "0")
+                    document.getElementById("inInfiniteLoop").innerText = "Infinite loop";
+                else
+                    document.getElementById("inInfiniteLoop").innerText = "";
+
+            }
+        };
+        xhttp.open("GET", "get_state/", true);
+        xhttp.send();
+    }
+
+    function click_important_button(button) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                //var data = JSON.parse(this.responseText);
+                err = is_error(this.responseText);
+                
+            }
+                
+        };
+        xhttp.open("GET", button+"/", true);
+        xhttp.send();
+    }
+
+    function click_user_button(button) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                //var data = JSON.parse(this.responseText);
+                err = is_error(this.responseText);
+            }
+        };
+        xhttp.open("GET", "button/"+button.toString()+"/", true);
+        xhttp.send();
+    }
+
+    function is_error(response) {
+        if(response.search("ko") != -1 || response.search("error") != -1)
+        {
+            response = response.replace("ko:", "");
+            response = response.replace("error:", "");
+            document.getElementById("err-div").innerHTML = response;
+
+            setTimeout(function() {
+                document.getElementById("err-div").innerHTML = "";
+            }, 5000);
+            return true;
+        }
+        return false;
+    }
+
+    setInterval(get_server_state, 2000);
+</script>
