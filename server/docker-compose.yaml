@@ -1,0 +1,21 @@
+version: "3"
+services:
+  mosquitto:
+    image: eclipse-mosquitto
+    hostname: mosquitto
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+
+  web:
+      build: .
+      restart: 'always'
+      container_name: 'blocklyInterface'
+      volumes:
+        - ./storage:/code/storage
+        - ./storage/virtual_usb:/code/virtual_usb
+      network_mode: host
+      depends_on:
+        - mosquitto

@@ -2,6 +2,7 @@ from django.conf import settings
 from blockly.mqtt import mqttClient as mqtt_client
 from blockly import mqtt
 from time import time
+import json
 
 mqtt_client = mqtt.mqttClient()
 class SeqManager():
@@ -117,6 +118,18 @@ class SeqManager():
                 else: #is a movement cmd
                     print("movement " + target + " " + arg)
                     rc, mid = mqtt_client.client.publish(target, arg)
+                    # send as json
+                    arg.split(",")
+                    print(arg)  
+                    if len(arg) > 3:
+                        position = arg[2]
+                        velocity = arg[3]
+                        data = {
+                            "d": target, #device
+                            "p": position,
+                            "v": velocity
+                        }
+                        rc, mid = mqtt_client.client.publish(target+"/json", json.dumps(data))
 
                 self.lastCmds.append(self.currentCmd)
                 #remove the sended line

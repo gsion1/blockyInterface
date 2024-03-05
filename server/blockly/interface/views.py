@@ -9,6 +9,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django import template
 from django.contrib.staticfiles import finders
 import time
+import shutil
 from threading import Thread, Event
 import json
 #import paho.mqtt.client as mqtt
@@ -197,8 +198,19 @@ def delete_seq(request, fileName):
         return HttpResponse("ko: There is an issue. Maybe the file is already deleted")
 
 def usb(request):
-    pass
-    return HttpResponse("ok")
+    try:
+        #get all files in ../Thingva/USB
+        path = settings.USB_PATH + "/"
+        files = dirToFileList(path)
+        #copy files to storage/sequences/custom
+        for f in files:
+            if f.find(".txt") != -1 or f.find(".json") != -1 or f.find(".xml") != -1:
+                shutil.copyfile(path + f, settings.SEQ_PATH + "/custom/" + f)
+
+    except Exception as e:     
+        print (e)
+        return HttpResponse("ko: There is an issue. Did you connect the usb key ? Sequences should be stored in a foler named Thingva. ")
+    return HttpResponse("Imported: " + str(files))
 
 def update(request):
     pass

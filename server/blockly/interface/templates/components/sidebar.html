@@ -7,6 +7,7 @@
     <div class="fileList flex-col" id="fileListYourSeq">
 
     </div>
+    <div id="importusb-msg"></div>
 </div>
 
 <div id="tab_ThingvaEx" class="tabcontent">
@@ -192,6 +193,9 @@
             if (this.readyState == 4 && this.status == 200) {
                 //var data = JSON.parse(this.responseText);
                 err = is_error(this.responseText);
+                document.getElementById("importusb-msg").innerHTML = this.responseText;
+                setTimeout(getFileList, 1000);
+
             }
         };
         xhttp.open("GET", "usb/", true);

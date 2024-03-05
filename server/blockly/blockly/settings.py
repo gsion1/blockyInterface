@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'blockly.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / '../storage/db.sqlite3',
     }
 }
 
@@ -140,4 +140,5 @@ MQTT_PASS = ""
 MQTT_KEEPALIVE = 60
 
 ######### PATH #####
-SEQ_PATH = os.path.join(BASE_DIR, '..', 'sequences')
+SEQ_PATH = os.path.join(BASE_DIR, '..', 'storage' , 'sequences')
+USB_PATH = os.path.join(BASE_DIR, '..', 'virtual_usb' , 'Thingva')
