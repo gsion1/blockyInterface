@@ -49,11 +49,27 @@
         border-radius: 99em;
         box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
         margin: 20px;
+        cursor: pointer;
     }
 
     .stop {
         background-color: red;
         color: white;
+    }
+
+    .blink {
+        animation: blinker 2s linear infinite;
+    }
+
+    .blue {
+        background-color: rgb(44, 44, 188);
+        color: white;
+    }
+
+    @keyframes blinker {
+        50% {
+            opacity: 20%;
+        }
     }
 
 </style>
@@ -71,6 +87,13 @@
                 document.getElementById("currentCmd").title = data["lastCmds"];
                 document.getElementById("user-msg").innerText = data["msg"];
 
+                if(data["msg"].search("Click run to start") != -1 || data["currentState"].search("aused") != -1) { 
+                    document.getElementById("user-msg").classList.add("blink");
+                }
+                else {
+                    document.getElementById("user-msg").classList.remove("blink");
+                }
+
                 var rem_pause = parseInt(data["waitingForTime"])
                 if(rem_pause > 1)
                 {
@@ -83,7 +106,7 @@
 
                 if(data["waitingForBtn"] != "")
                 {
-                    var btn = `<button class="actionButton blue" onclick="click_user_button('${data["waitingForBtn"]}')">${data["waitingForBtn"]}</button>`
+                    var btn = `<button class="actionButton blue blink" onclick="click_user_button('${data["waitingForBtn"]}')">${data["waitingForBtn"]}</button>`
                     document.getElementById("waiting-for-button-div").innerHTML = btn;
                     document.getElementById("waiting-for-button-div").style.display = "block";
                 }

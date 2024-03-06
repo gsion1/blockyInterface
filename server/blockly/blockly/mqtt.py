@@ -1,5 +1,6 @@
 import paho.mqtt.client as mqtt
 from django.conf import settings
+import json
 class mqttClient:
     connectedDevices = {}
     
@@ -26,11 +27,12 @@ class mqttClient:
 
 
     def on_message(self,mqtt_client, userdata, msg):
+        print("onmessage")
         print(f'Received message on topic: {msg.topic} with payload: {msg.payload}')
 
         #when they connect and periodically, device send their names on isConnected topic. save and display 
         #for example : Linear-1=actuator or NameOfTheButton=button
-        if(msg.topic == "isConnected"):
+        if(msg.topic.find("isConnected") != -1):
             dev = msg.payload.decode("utf-8").split("=")
             if(len(dev) < 2):
                 dev.append("default")
@@ -40,16 +42,26 @@ class mqttClient:
             print("New device: ", self.connectedDevices)
 
         #if a physical button is clicked 
-        if(msg.topic == "button"):
+        if(msg.topic.find("button") != -1):
             button = msg.payload.decode("utf-8").split("=") #button name, counter
             #setButton(button[0])
 
-        #actuators often send their position. Not in real time
-        if(msg.topic == "posFeedback"):  #actuatorName,Position
-            dev = msg.payload.decode("utf-8").split("=")
-            if(len(dev) < 2):
-                dev.append("---")
-            self.connectedDevices[dev[0]]['pos']=dev[1]
+
+        if(msg.topic.find("feedback") != -1):  #actuatorName,Position
+            dev = json.loads(msg.payload.decode("utf-8"))
+            if dev["source"] == None :
+                return
+            if dev["absPos"] == None :
+                dev["absPos"] = "---"
+
+            if dev["relPos"] == None :
+                dev["relPos"] = "---"
+
+            if dev["speed"] == None :
+                dev["speed"] = "---"
+
+            self.connectedDevices[dev["source"]] = dev
+            print (dev)
 
 
     

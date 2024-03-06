@@ -1,0 +1,12 @@
+LOOPFOREVER=true
+WaitForButton=Start
+Rotatif-1=$1,0,900,500,80*5;open valve
+Pause=1
+Lineaire-1=$1,0,1,500,200*55; blow liquid from tank
+Pause=1
+Rotatif-1=$1,0,90,500,200*15; close valve
+Pause=1
+Lineaire-1=$1,0,249,500,200*57; push liquid
+Pause=1
+
+

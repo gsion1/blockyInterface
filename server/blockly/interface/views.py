@@ -33,7 +33,7 @@ def home(request):
             return redirect('home')
     
     print("auth", success)"""
-    tests()
+    seq.tests()
     template = loader.get_template("index.html")
     context = {}
     return HttpResponse(template.render(context, request))
@@ -115,10 +115,6 @@ def connectedDevices(request):
     #print(mqtt_client.connectedDevices)
     return HttpResponse(json.dumps(mqtt_client.connectedDevices))
 
-def tests():
-    isConnected = ["Linear-1=actuator", "NameOfTheButton=button"]
-    for item in isConnected:
-        rc, mid = mqtt_client.client.publish("isConnected", item)
 
 
 def save_seq(request):

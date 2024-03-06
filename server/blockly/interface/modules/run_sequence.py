@@ -44,7 +44,7 @@ class SeqManager():
                 path = settings.SEQ_PATH + "/" + dir + "/" + fileName
             f = open(path, "r")
 
-            self.currentFileContent = f.read().split('\n')
+            self.currentFileContent = list(filter(None, f.read().split('\n')))
             print(self.currentFileContent)
             self.currentFile = fileName
             self.inInfiniteLoop = False #reset inifinite loop from previous sequence
@@ -65,7 +65,7 @@ class SeqManager():
             self.currentCmd = ""
             self.waitingForBtn = ""
             self.waitingForTime = 0
-            #print ("File ended ###############")
+            print ("File ended ###############")
             return False, "File ended"
         
         #button we were waiting for was clicked
@@ -82,13 +82,13 @@ class SeqManager():
             self.waitingForTime = self.pauseDuration - (time() - self.pauseBeginTime)
         
         if(self.currentState == "playing" and self.waitingFor == 0 and self.waitingForBtn == ""):
-            print("in the loop")
+            #print("in the loop")
             currentLine = self.currentFileContent[0]
             self.currentCmd = currentLine.split(";")[0].strip() #ignore comments
 
             if self.currentCmd.find('LOOPFOREVER') != -1:
                 self.inInfiniteLoop = True
-                print("loop forever")
+                print("stat looping forever")
 
             if currentLine != "" and pause_ended and self.waitingForBtn == "": #execute line
                 self.waitingFor = 0
@@ -97,47 +97,73 @@ class SeqManager():
                 #ex cmds -> actuator1=89 ; go to pos 89
                 # Pause=7 ; pause for 7s
                 #WaitForButton=IamAButton ; wait for button 
-                self.currentCmd = self.currentCmd.split("=")
-                target = self.currentCmd[0].strip()
-                arg = self.currentCmd[1].strip()
+                cmd = self.currentCmd.split("=")
+                target = cmd[0].strip()
+                arg = cmd[1].strip()
+
+                #add the line executed at the bottom of the list to do it again and again
+                if self.inInfiniteLoop and self.currentCmd.find('LOOPFOREVER') == -1:
+                    self.currentFileContent.append(currentLine) 
+                    print(self.currentFileContent)
 
                 if target == 'Pause':
                     self.pauseDuration = float(arg.replace("\n",""))
                     self.waitingForTime = self.pauseDuration
-                    self.lastCommand = "Pause for " + str(self.waitingForTime) + "s"
+                    self.lastCommand = self.currentCmd
+                    self.msg = "Pause for " + str(self.waitingForTime) + "s"
                     self.pauseBeginTime = time()
                     print(self.lastCommand)
                 
                 elif target == "WaitForButton":
                     #reset button state first
-                    btn=str(arg).replace("\n","")
-                    self.waitingForBtn=btn
+                    btn = str(arg).replace("\n","")
+                    self.waitingForBtn = btn
                     self.msg = "Waiting for button " + self.waitingForBtn
                     print("waiting for button " + self.waitingForBtn)
                     
+                elif target == "LOOPFOREVER":
+                    pass
+
                 else: #is a movement cmd
                     print("movement " + target + " " + arg)
-                    rc, mid = mqtt_client.client.publish(target, arg)
-                    # send as json
-                    arg.split(",")
-                    print(arg)  
-                    if len(arg) > 3:
-                        position = arg[2]
-                        velocity = arg[3]
-                        data = {
-                            "d": target, #device
-                            "p": position,
-                            "v": velocity
-                        }
-                        rc, mid = mqtt_client.client.publish(target+"/json", json.dumps(data))
+                    self.msg = "Movement " + target + " " + arg
+                    rc, mid = mqtt_client.client.publish(target, arg) #keep compatibility with v1
+                   
+                    try: # send as json
+                        arg = arg.split(",")
+                        print(arg)  
+                        if len(arg) > 3:
+                            position = arg[2]
+                            velocity = arg[3]
+                            data = {
+                                "type": "pos", #position
+                                "pos": position,
+                                "speed": velocity,
+                            }
+                            if len(arg) > 4:
+                                data["acc"] = arg[4]
+                            #keep compatibility with v1
+                            rc, mid = mqtt_client.client.publish("/command/"+target, json.dumps(data))
+
+                    except Exception as e:
+                        print(e)
 
                 self.lastCmds.append(self.currentCmd)
-                #remove the sended line
+                #remove the sent line
                 self.currentFileContent = self.currentFileContent[1:] 
-
-                #add the line executed at the bottom of the list to do it again and again
-                if self.inInfiniteLoop:
-                    self.currentFileContent.append(currentLine) 
+                
+                
             
         return True, ""
 
+    def tests(self):
+        isConnected = ["Linear-1=actuator", "NameOfTheButton=button", "5=actuator"]
+        for item in isConnected:
+            rc, mid = mqtt_client.client.publish("/isConnected/", item)
+        feedback = {
+            "source": 5,
+            "absPos": 10,
+            "relPos": 13,
+            "speed": 15
+        }
+        rc, mid = mqtt_client.client.publish("/feedback/", json.dumps(feedback))
