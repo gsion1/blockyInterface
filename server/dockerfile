@@ -2,7 +2,7 @@ FROM python:3.11
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /code
-#COPY blockly/requierements.txt .
+
 COPY blockly/. /code/blockly
 RUN pip install -r blockly/requierements.txt
 
