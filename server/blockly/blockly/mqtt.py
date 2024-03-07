@@ -22,6 +22,8 @@ class mqttClient:
             #mqtt_client.subscribe('django/mqtt')
             mqtt_client.subscribe('isConnected')
             mqtt_client.subscribe('posFeedback')
+            mqtt_client.subscribe('feedback')
+            
         else:
             print('Bad connection. Code:', rc)
 
