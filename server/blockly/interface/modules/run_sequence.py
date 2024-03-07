@@ -132,13 +132,17 @@ class SeqManager():
                     try: # send as json
                         arg = arg.split(",")
                         print(arg)  
+
+                        #if present, rmove checksum
+                        arg[-1] = arg[-1].split("*")[0]
+
                         if len(arg) > 3:
                             position = arg[2]
                             velocity = arg[3]
                             data = {
                                 "type": "pos", #position
-                                "pos": position,
-                                "speed": velocity,
+                                "pos": int(position), #position,
+                                "speed": int(velocity), #velocity,
                             }
                             if len(arg) > 4:
                                 data["acc"] = arg[4]
