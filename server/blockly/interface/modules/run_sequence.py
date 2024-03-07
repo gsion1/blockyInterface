@@ -143,7 +143,7 @@ class SeqManager():
                             if len(arg) > 4:
                                 data["acc"] = arg[4]
                             #keep compatibility with v1
-                            rc, mid = mqtt_client.client.publish("/command/"+target, json.dumps(data))
+                            rc, mid = mqtt_client.client.publish("/command/"+target+"/", json.dumps(data))
 
                     except Exception as e:
                         print(e)
