@@ -194,22 +194,20 @@ def delete_seq(request, fileName):
         return HttpResponse("ko: There is an issue. Maybe the file is already deleted")
 
 def find_folder(directory):
-    """Recherche le dossier Thingva dans directory."""
-    
+    """Recherche le dossier thingva dans directory."""
     for child_item in os.listdir(directory):
         child_path = os.path.join(directory, child_item)
-        print("tessssting", child_path)
+        print("cholditem", child_item)
         if child_item.lower() == "thingva":
-            print("found", child_path)
             return child_path
-
-        else:
+        
+        try:
             found_path = find_folder(child_path)
-            print("testing", child_path, found_path)
             if found_path is not None:
-                print("found", found_path)
                 return found_path
-    print("not found")
+        except Exception as e:
+            print(e)
+                
     return None
     
 def usb(request):
@@ -218,13 +216,8 @@ def usb(request):
         path = settings.USB_PATH + "/"
         path = find_folder(path)
         if path == None:
-            path = settings.USB_PATH + "/media/"
-            path = find_folder(path)
-            if path == None:
-                return HttpResponse("ko: There is an issue. Did you connect the usb key ? Sequences should be stored in a foler named Thingva. ")
-
+            return HttpResponse("ko: There is an issue. Did you connect the usb key ? Sequences should be stored in a foler named Thingva. ")
         files = dirToFileList(path)
-        print(path,files)
         #copy files to storage/sequences/custom
         for f in files:
             if f.find(".txt") != -1 or f.find(".json") != -1 or f.find(".xml") != -1:
