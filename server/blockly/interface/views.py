@@ -195,6 +195,7 @@ def delete_seq(request, fileName):
 
 def find_folder(directory):
     """Recherche le dossier Thingva dans directory."""
+    
     for child_item in os.listdir(directory):
         child_path = os.path.join(directory, child_item)
         print("tessssting", child_path)
@@ -217,7 +218,11 @@ def usb(request):
         path = settings.USB_PATH + "/"
         path = find_folder(path)
         if path == None:
-            return HttpResponse("ko: There is an issue. Did you connect the usb key ? Sequences should be stored in a foler named Thingva. ")
+            path = settings.USB_PATH + "/media/"
+            path = find_folder(path)
+            if path == None:
+                return HttpResponse("ko: There is an issue. Did you connect the usb key ? Sequences should be stored in a foler named Thingva. ")
+
         files = dirToFileList(path)
         print(path,files)
         #copy files to storage/sequences/custom
