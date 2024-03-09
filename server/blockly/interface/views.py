@@ -197,12 +197,14 @@ def find_folder(directory):
     """Recherche le dossier Thingva dans directory."""
     for child_item in os.listdir(directory):
         child_path = os.path.join(directory, child_item)
+        
         if os.path.isdir(child_path) and child_item.lower() == "thingva":
             print("found", child_path)
             return child_path
 
         elif os.path.isdir(child_path):
             found_path = find_folder(child_path)
+            print("testing", child_path, found_path)
             if found_path is not None:
                 print("found", found_path)
                 return found_path
