@@ -141,4 +141,4 @@ MQTT_KEEPALIVE = 0
 
 ######### PATH #####
 SEQ_PATH = os.path.join(BASE_DIR, '..', 'storage' , 'sequences')
-USB_PATH = os.path.join(BASE_DIR, '..', 'virtual_usb' , 'Thingva')
+USB_PATH = os.path.join(BASE_DIR, '..', 'virtual_usb')
