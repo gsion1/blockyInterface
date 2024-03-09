@@ -216,7 +216,10 @@ def usb(request):
         path = settings.USB_PATH + "/"
         path = find_folder(path)
         if path == None:
-            return HttpResponse("ko: There is an issue. Did you connect the usb key ? Sequences should be stored in a foler named Thingva. ")
+            path = settings.USB_PATH + "/media/"
+            path = find_folder(path)
+            if path == None:
+                return HttpResponse("ko: There is an issue. Did you connect the usb key ? Sequences should be stored in a foler named Thingva. ")
         files = dirToFileList(path)
         #copy files to storage/sequences/custom
         for f in files:
