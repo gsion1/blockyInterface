@@ -65,7 +65,7 @@ class SeqManager():
             self.currentCmd = ""
             self.waitingForBtn = ""
             self.waitingForTime = 0
-            print ("File ended ###############")
+            #print ("File ended ###############")
             return False, "File ended"
         
         #button we were waiting for was clicked
