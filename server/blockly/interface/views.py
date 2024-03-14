@@ -211,7 +211,7 @@ def find_folder(directory):
     return None
 
 def raspi_find_usb_folder(path): #classic function does not work for raspi with symlink
-    print("test rapi ", os.listdir(path))
+    print("test raspi ", path, os.listdir(path))
     for child_item in os.listdir(path):
         print("childitem", child_item)
         try:
