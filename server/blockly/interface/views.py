@@ -199,7 +199,7 @@ def find_folder(directory):
         child_path = os.path.join(directory, child_item)
         print("childitem", child_item)
         if child_item.lower() == "thingva":
-            return child_path
+            return child_path + "/"
         
         try:
             found_path = find_folder(child_path)
