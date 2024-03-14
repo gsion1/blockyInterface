@@ -223,23 +223,23 @@ def raspi_find_usb_folder(path): #classic function does not work for raspi with 
         
     
 def usb(request):
-    try:
-        #get all files in ../Thingva/USB
-        path = settings.USB_PATH + "/"
-        path = find_folder(path)
+    #try:
+    #get all files in ../Thingva/USB
+    path = settings.USB_PATH + "/"
+    path = find_folder(path)
+    if path == None:
+        path = raspi_find_usb_folder(path)
         if path == None:
-            path = raspi_find_usb_folder(path)
-            if path == None:
-                return HttpResponse("ko: There is an issue. Did you connect the usb key ? Sequences should be stored in a foler named Thingva. ")
-        files = dirToFileList(path)
-        #copy files to storage/sequences/custom
-        for f in files:
-            if f.find(".txt") != -1 or f.find(".json") != -1 or f.find(".xml") != -1:
-                shutil.copyfile(path + f, settings.SEQ_PATH + "/custom/" + f)
+            return HttpResponse("ko: There is an issue. Did you connect the usb key ? Sequences should be stored in a foler named Thingva. ")
+    files = dirToFileList(path)
+    #copy files to storage/sequences/custom
+    for f in files:
+        if f.find(".txt") != -1 or f.find(".json") != -1 or f.find(".xml") != -1:
+            shutil.copyfile(path + f, settings.SEQ_PATH + "/custom/" + f)
 
-    except Exception as e:     
-        print (e)
-        return HttpResponse("ko: There is an error on our side. Did you connect the usb key ? Sequences should be stored in a foler named Thingva. ")
+    #except Exception as e:     
+        #print (e)
+        #return HttpResponse("ko: There is an error on our side. Did you connect the usb key ? Sequences should be stored in a foler named Thingva. ")
     return HttpResponse("Imported: " + str(files))
 
 def update(request):
