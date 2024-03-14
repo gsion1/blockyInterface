@@ -211,7 +211,6 @@ def find_folder(directory):
     return None
 
 def raspi_find_usb_folder(path): #classic function does not work for raspi with symlink
-    path += "media/"
     for child_item in os.listdir(path):
         child_path = os.path.join(path, child_item) #usb key name
         print("childitem", child_item)
@@ -228,6 +227,7 @@ def usb(request):
     path = settings.USB_PATH + "/"
     path = find_folder(path)
     if path == None:
+        path = settings.USB_PATH + "/media/"
         path = raspi_find_usb_folder(path)
         if path == None:
             return HttpResponse("ko: There is an issue. Did you connect the usb key ? Sequences should be stored in a foler named Thingva. ")
