@@ -197,7 +197,7 @@ def find_folder(directory):
     """Recherche le dossier thingva dans directory."""
     for child_item in os.listdir(directory):
         child_path = os.path.join(directory, child_item)
-        print("cholditem", child_item)
+        print("childitem", child_item)
         if child_item.lower() == "thingva":
             return child_path
         
@@ -212,11 +212,15 @@ def find_folder(directory):
 
 def raspi_find_usb_folder(path): #classic function does not work for raspi with symlink
     for child_item in os.listdir(path):
-        child_path = os.path.join(path, child_item) #usb key name
-        print("childitem", child_item)
-        for child_item2 in os.listdir(child_path): #browse usb key's root folder
-            if child_item2.lower() == "thingva":
-                return child_path
+        try:
+            child_path = os.path.join(path, child_item) #usb key name
+            print("childitem", child_item)
+            for child_item2 in os.listdir(child_path): #browse usb key's root folder
+                print("childitem2 ", child_item2)
+                if child_item2.lower() == "thingva":
+                    return child_path
+        except Exception as e:
+            print("Cannot open ", child_path , e)
     
     return None
         
