@@ -4,18 +4,19 @@ services:
     image: eclipse-mosquitto
     hostname: mosquitto
     container_name: mosquitto
-    restart: unless-stopped
+    restart: always
     network_mode: host
     volumes:
       - ./config/mosquitto-mqtt:/mosquitto/config/
 
   web:
       build: .
-      restart: 'always'
+      restart: always
       container_name: 'blocklyInterface'
       volumes:
         - ./storage:/code/storage
         - ./storage/virtual_usb:/code/virtual_usb
+        # /media:/code/virtual_usb #for docker on raspi
       network_mode: host
       depends_on:
         - mosquitto
