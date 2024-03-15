@@ -15,8 +15,8 @@ services:
       container_name: 'blocklyInterface'
       volumes:
         - ./storage:/code/storage
-        - ./storage/virtual_usb:/code/virtual_usb
-        # /media:/code/virtual_usb #for docker on raspi
+        # ./storage/virtual_usb:/code/virtual_usb #uncomment if not on raspi
+        - /media:/code/virtual_usb #for docker on raspi
       network_mode: host
       depends_on:
         - mosquitto
